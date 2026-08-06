@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Datenschutzerklärung – Nokki</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d0d14;--bg2:#0d0f18;--amb:#b46a0e;--amb2:#e8b86d;--txt:#f1f0f8;--mut:#8b8aa8;--bdr:rgba(255,255,255,.07)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.7}
+a{color:var(--amb2);text-decoration:none}a:hover{text-decoration:underline}
+nav{position:sticky;top:0;z-index:10;background:rgba(8,9,15,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);padding:0 5%;height:56px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:800;text-decoration:none;color:var(--txt)}
+.logo-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--amb),var(--amb2));display:flex;align-items:center;justify-content:center;font-size:14px}
+.back{color:var(--mut);font-size:13px;text-decoration:none;padding:6px 14px;border-radius:8px;border:1px solid var(--bdr);transition:all .2s}
+.back:hover{color:var(--txt);border-color:rgba(232,184,109,.3);background:rgba(232,184,109,.05);text-decoration:none}
+.container{max-width:780px;margin:0 auto;padding:56px 5% 100px}
+.badge{display:inline-flex;background:rgba(180,106,14,.1);border:1px solid rgba(232,184,109,.25);color:var(--amb2);padding:4px 14px;border-radius:99px;font-size:11px;font-weight:700;margin-bottom:18px;letter-spacing:.05em;text-transform:uppercase}
+h1{font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;line-height:1.1}
+.meta{color:var(--mut);font-size:13px;margin-bottom:44px;padding-bottom:32px;border-bottom:1px solid var(--bdr)}
+.toc{background:var(--bg2);border:1px solid var(--bdr);border-radius:16px;padding:24px 28px;margin-bottom:48px}
+.toc-title{font-size:11px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.toc ol{padding-left:20px;color:var(--mut);font-size:13px;line-height:2.4}
+.toc a{color:var(--amb2)}.toc a:hover{text-decoration:underline}
+.section{margin-bottom:52px;scroll-margin-top:72px}
+.slabel{font-size:10px;font-weight:700;color:var(--amb2);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+h2{font-size:20px;font-weight:700;margin-bottom:18px;letter-spacing:-.02em}
+h3{font-size:12px;font-weight:700;color:rgba(255,255,255,.45);margin:24px 0 8px;text-transform:uppercase;letter-spacing:.1em}
+p{font-size:13px;color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:14px}
+p:last-child{margin-bottom:0}
+ul{margin:8px 0 16px 0;padding:0;list-style:none}
+ul li{font-size:13px;color:rgba(255,255,255,.65);padding:5px 0 5px 22px;position:relative;line-height:1.65}
+ul li::before{content:'–';position:absolute;left:0;color:var(--amb2)}
+.info{background:rgba(180,106,14,.07);border:1px solid rgba(232,184,109,.18);border-radius:12px;padding:16px 20px;margin:18px 0;font-size:13px;color:rgba(255,255,255,.7);line-height:1.8}
+.warn{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-radius:12px;padding:16px 20px;margin:18px 0;font-size:13px;color:#fca5a5;line-height:1.8}
+/* Drittanbieter-Tabelle */
+.third-party{width:100%;border-collapse:collapse;margin:16px 0}
+.third-party th{padding:9px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--bdr);background:rgba(255,255,255,.02)}
+.third-party td{padding:10px 14px;font-size:12px;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.6}
+.third-party tr:last-child td{border-bottom:none}
+.third-party tr:hover td{background:rgba(255,255,255,.02)}
+.tp-name{color:var(--amb2);font-weight:600}
+hr{border:none;border-top:1px solid var(--bdr);margin:48px 0}
+.footer-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding-top:36px;border-top:1px solid var(--bdr);margin-top:56px}
+.footer-nav a{color:var(--mut);font-size:12px;padding:7px 16px;border-radius:8px;border:1px solid var(--bdr);text-decoration:none;transition:all .2s}
+.footer-nav a:hover{color:var(--txt);border-color:rgba(232,184,109,.3)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><div class="logo-icon">💬</div>Nokki</a>
+  <a href="/" class="back">← Startseite</a>
+</nav>
+
+<div class="container">
+  <div class="badge">Datenschutz</div>
+  <h1>Datenschutzerklärung</h1>
+  <p class="meta">Stand: April 2026 &nbsp;·&nbsp; Gültig für alle Dienste unter lumestack.de</p>
+
+  <div class="toc">
+    <div class="toc-title">Inhaltsverzeichnis</div>
+    <ol>
+      <li><a href="#verantwortlicher">Verantwortlicher</a></li>
+      <li><a href="#grundsaetze">Grundsätze der Datenverarbeitung</a></li>
+      <li><a href="#kontodaten">Kontodaten</a></li>
+      <li><a href="#nachrichten">Nachrichten und Dateien</a></li>
+      <li><a href="#verbindungsdaten">Verbindungsdaten</a></li>
+      <li><a href="#moderation">Sicherheit und Inhaltsmoderation</a></li>
+      <li><a href="#behoerden">Datenweitergabe an Behörden</a></li>
+      <li><a href="#speicherdauer">Speicherdauer</a></li>
+      <li><a href="#drittanbieter">Drittanbieter und externe Dienste</a></li>
+      <li><a href="#nicht">Was wir nicht tun</a></li>
+      <li><a href="#rechte">Ihre Rechte nach der DSGVO</a></li>
+      <li><a href="#cookies">Cookies und lokale Speicherung</a></li>
+      <li><a href="#kontakt">Datenschutzkontakt</a></li>
+    </ol>
+  </div>
+
+  <!-- 1 -->
+  <div class="section" id="verantwortlicher">
+    <div class="slabel">Art. 13 Abs. 1 DSGVO</div>
+    <h2>1. Verantwortlicher</h2>
+    <p>Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) ist der Betreiber von Nokki. Die vollständigen Angaben entnehmen Sie bitte dem <a href="/impressum.html">Impressum</a>.</p>
+    <p>Bei Fragen zum Datenschutz wenden Sie sich bitte an: <strong>privacy@lumestack.de</strong></p>
+  </div>
+
+  <hr/>
+
+  <!-- 2 -->
+  <div class="section" id="grundsaetze">
+    <div class="slabel">Art. 5 DSGVO</div>
+    <h2>2. Grundsätze der Datenverarbeitung</h2>
+    <p>Die Verarbeitung personenbezogener Daten erfolgt ausschließlich auf Grundlage der DSGVO und des Bundesdatenschutzgesetzes (BDSG). Es werden nur Daten erhoben, die für den Betrieb des Dienstes erforderlich sind.</p>
+    <p>Rechtsgrundlagen für die Datenverarbeitung sind:</p>
+    <ul>
+      <li>Art. 6 Abs. 1 lit. a DSGVO — Einwilligung (z. B. bei optionalen Profilangaben)</li>
+      <li>Art. 6 Abs. 1 lit. b DSGVO — Vertragserfüllung (Bereitstellung des Messaging-Dienstes)</li>
+      <li>Art. 6 Abs. 1 lit. c DSGVO — Rechtliche Verpflichtung (Verbindungsdaten nach TMG)</li>
+      <li>Art. 6 Abs. 1 lit. f DSGVO — Berechtigte Interessen (Systemsicherheit, Missbrauchsabwehr)</li>
+    </ul>
+  </div>
+
+  <hr/>
+
+  <!-- 3 -->
+  <div class="section" id="kontodaten">
+    <div class="slabel">Art. 6 Abs. 1 lit. b DSGVO</div>
+    <h2>3. Kontodaten</h2>
+    <p>Zur Nutzung von Nokki ist die Erstellung eines Benutzerkontos erforderlich. Dabei werden folgende Daten erhoben:</p>
+    <ul>
+      <li>E-Mail-Adresse — zur Kontoerstellung, Verifizierung und Wiederherstellung</li>
+      <li>Passwort — ausschließlich als bcrypt-Hash gespeichert, nicht im Klartext</li>
+      <li>Benutzername — frei wählbar, kein Klarname erforderlich</li>
+      <li>UIN — eine automatisch generierte, eindeutige Identifikationsnummer</li>
+    </ul>
+    <p>Folgende Angaben können freiwillig ergänzt werden:</p>
+    <ul>
+      <li>Profilbild</li>
+      <li>Profiltext (Biografie, maximal 200 Zeichen)</li>
+      <li>Statusnachricht</li>
+    </ul>
+    <div class="info">Es wird kein Klarname und keine Telefonnummer benötigt. Nokki kann vollständig unter einem Pseudonym genutzt werden.</div>
+  </div>
+
+  <hr/>
+
+  <!-- 4 -->
+  <div class="section" id="nachrichten">
+    <div class="slabel">Art. 6 Abs. 1 lit. b DSGVO</div>
+    <h2>4. Nachrichten und Dateien</h2>
+    <p>Nachrichten und Dateien werden auf unseren Servern gespeichert, um die Zustellung zwischen Nutzern zu ermöglichen.</p>
+    <ul>
+      <li>Textnachrichten werden derzeit serverseitig lesbar gespeichert</li>
+      <li>Die Übertragung zwischen Gerät und Server wird per TLS geschützt; produktive Ende-zu-Ende-Verschlüsselung ist noch nicht verfügbar</li>
+      <li>Dateien und Bilder bis maximal 50 MB werden auf dem Server gespeichert</li>
+      <li>Selbst-zerstörende Nachrichten werden nach Ablauf automatisch und unwiderruflich gelöscht</li>
+      <li>Manuell gelöschte Nachrichten werden aus der Datenbank entfernt</li>
+    </ul>
+    <div class="warn">Nachrichteninhalte sind auf Serverebene lesbar. Eine automatische oder routinemäßige Auswertung zu anderen als den genannten Zwecken findet nicht statt.</div>
+  </div>
+
+  <hr/>
+
+  <!-- 5 -->
+  <div class="section" id="verbindungsdaten">
+    <div class="slabel">§ 14 TMG, Art. 6 Abs. 1 lit. c DSGVO</div>
+    <h2>5. Verbindungsdaten</h2>
+    <p>Bei jedem Anmeldevorgang werden folgende technische Daten gespeichert:</p>
+    <ul>
+      <li>IP-Adresse</li>
+      <li>Gerättyp (Desktop, Mobil, Tablet)</li>
+      <li>Betriebssystem und Browser</li>
+      <li>Zeitstempel des Anmeldevorgangs</li>
+    </ul>
+    <h3>Rechtsgrundlage und Zweck</h3>
+    <p>Die Speicherung erfolgt auf Grundlage von § 14 TMG sowie Art. 6 Abs. 1 lit. c DSGVO. Diese Daten dienen ausschließlich der Aufklärung von Straftaten und werden nicht für andere Zwecke verwendet oder ohne gesetzliche Grundlage an Dritte weitergegeben.</p>
+  </div>
+
+  <hr/>
+
+  <!-- 6 -->
+  <div class="section" id="moderation">
+    <div class="slabel">Art. 6 Abs. 1 lit. f DSGVO</div>
+    <h2>6. Sicherheit und Inhaltsmoderation</h2>
+    <p>Nokki betreibt automatische Systeme zur Erkennung rechtswidriger Inhalte. Erkannte Inhalte werden blockiert und in einem Sicherheitsprotokoll erfasst. Bei schwerwiegenden Verstößen kann eine Meldung an die zuständigen Strafverfolgungsbehörden erfolgen.</p>
+    <p>Nutzer können andere Nutzer und Inhalte über das integrierte Meldesystem melden. Gemeldete Inhalte werden durch den Betreiber überprüft.</p>
+  </div>
+
+  <hr/>
+
+  <!-- 7 -->
+  <div class="section" id="behoerden">
+    <div class="slabel">Art. 6 Abs. 1 lit. c DSGVO</div>
+    <h2>7. Datenweitergabe an Behörden</h2>
+    <p>Eine Weitergabe personenbezogener Daten an Strafverfolgungsbehörden erfolgt ausschließlich:</p>
+    <ul>
+      <li>bei konkretem Verdacht auf eine Straftat</li>
+      <li>auf Grundlage einer gesetzlichen Verpflichtung oder richterlichen Anordnung</li>
+      <li>im Rahmen der geltenden Datenschutzgesetze (DSGVO, Strafprozessordnung)</li>
+    </ul>
+    <div class="info">Eine automatische, pauschale oder präventive Weitergabe findet nicht statt. Jede Datenweitergabe an Behörden wird dokumentiert.</div>
+  </div>
+
+  <hr/>
+
+  <!-- 8 -->
+  <div class="section" id="speicherdauer">
+    <div class="slabel">Art. 5 Abs. 1 lit. e DSGVO</div>
+    <h2>8. Speicherdauer</h2>
+    <p>Personenbezogene Daten werden nur so lange gespeichert, wie es für den jeweiligen Zweck erforderlich ist:</p>
+    <ul>
+      <li>Kontodaten: für die Dauer des Nutzungsvertrags, bis zur Kontolöschung durch den Nutzer</li>
+      <li>Nachrichten und Dateien: bis zur Löschung durch den Nutzer oder Ablauf der eingestellten Frist</li>
+      <li>Verbindungsdaten: mindestens zehn Wochen gemäß § 3 NetzDG, danach nach Zweckwegfall</li>
+      <li>Sicherheitsprotokolle: bis zur Aufklärung des jeweiligen Vorfalls</li>
+    </ul>
+    <p>Nach Löschung des Benutzerkontos werden alle zugehörigen personenbezogenen Daten gelöscht, sofern keine gesetzliche Aufbewahrungspflicht entgegensteht.</p>
+  </div>
+
+  <hr/>
+
+  <!-- 9 — DRITTANBIETER -->
+  <div class="section" id="drittanbieter">
+    <div class="slabel">Art. 13 Abs. 1 lit. e DSGVO</div>
+    <h2>9. Drittanbieter und externe Dienste</h2>
+    <p>Für den Betrieb von Nokki werden folgende externe Dienste eingesetzt. Soweit dabei personenbezogene Daten übermittelt werden, erfolgt dies auf Grundlage von Art. 6 Abs. 1 lit. b oder lit. f DSGVO.</p>
+
+    <h3>Hosting und Infrastruktur</h3>
+    <table class="third-party">
+      <thead>
+        <tr>
+          <th>Anbieter</th>
+          <th>Zweck</th>
+          <th>Sitz</th>
+          <th>Datenschutz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tp-name">World4You Internet Services GmbH</span></td>
+          <td>Hosting des Servers (VPS), auf dem Nokki betrieben wird. Alle Nutzerdaten, Nachrichten und Dateien werden auf diesem Server gespeichert.</td>
+          <td>Österreich (EU) — Rechenzentren in Linz, Wels und Wien</td>
+          <td><a href="https://www.world4you.com/unternehmen/datenschutzerklaerung" target="_blank" rel="noopener">Datenschutzerklärung</a></td>
+        </tr>
+        <tr>
+          <td><span class="tp-name">Let's Encrypt</span></td>
+          <td>Kostenlose TLS-Zertifikate für die verschlüsselte HTTPS-Verbindung. Bei der Ausstellung und Erneuerung wird die Domain an die Zertifizierungsstelle übermittelt.</td>
+          <td>USA (Internet Security Research Group) — Datenübertragung auf Basis von Standardvertragsklauseln</td>
+          <td><a href="https://letsencrypt.org/privacy/" target="_blank" rel="noopener">Datenschutzerklärung</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Monitoring</h3>
+    <table class="third-party">
+      <thead>
+        <tr>
+          <th>Anbieter</th>
+          <th>Zweck</th>
+          <th>Sitz</th>
+          <th>Datenschutz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tp-name">UptimeRobot s.r.o.</span></td>
+          <td>Überwachung der Verfügbarkeit von lumestack.de. UptimeRobot sendet regelmäßige HTTP-Anfragen an den Server, um Ausfälle zu erkennen. Dabei wird die URL des überwachten Endpunkts sowie die IP-Adresse des Servers an UptimeRobot übermittelt. Nutzerdaten werden dabei nicht weitergegeben.</td>
+          <td>Slowakei (EU) — Datenverarbeitung auch auf Servern in den USA (AWS, DigitalOcean) auf Basis von Standardvertragsklauseln</td>
+          <td><a href="https://uptimerobot.com/privacy/" target="_blank" rel="noopener">Datenschutzerklärung</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Video- und Audioanrufe (WebRTC)</h3>
+    <table class="third-party">
+      <thead>
+        <tr>
+          <th>Anbieter</th>
+          <th>Zweck</th>
+          <th>Sitz</th>
+          <th>Datenschutz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tp-name">Google LLC (STUN-Server)</span></td>
+          <td>Beim Aufbau von Video- und Audioanrufen (WebRTC) werden Google STUN-Server genutzt, um die öffentliche IP-Adresse des Nutzers zu ermitteln. Dieser Vorgang ist technisch notwendig für die direkte Peer-to-Peer-Verbindung. Die IP-Adresse des Nutzers wird dabei kurzzeitig an Google übermittelt.</td>
+          <td>USA — Datenübertragung auf Basis von Standardvertragsklauseln (EU-US Data Privacy Framework)</td>
+          <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Datenschutzerklärung</a></td>
+        </tr>
+        <tr>
+          <td><span class="tp-name">Eigener TURN-Server (lumestack.de)</span></td>
+          <td>Wenn eine direkte Verbindung nicht möglich ist (z. B. hinter einer Firewall), wird der Anruf-Datenverkehr über einen eigenen TURN-Server auf lumestack.de geleitet. Dieser Server wird vom Betreiber selbst betrieben. Dabei werden IP-Adressen und der verschlüsselte Medienstrom verarbeitet.</td>
+          <td>Österreich (EU) — World4You Rechenzentrum</td>
+          <td>Betreiber-eigener Dienst</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>QR-Code-Generierung</h3>
+    <table class="third-party">
+      <thead>
+        <tr>
+          <th>Anbieter</th>
+          <th>Zweck</th>
+          <th>Sitz</th>
+          <th>Datenschutz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tp-name">GoQR.me / api.qrserver.com</span></td>
+          <td>Wenn ein Nutzer den QR-Code für einen Gruppen-Einladungslink anzeigt oder herunterlädt, wird der Einladungslink an den externen Dienst api.qrserver.com übermittelt, der daraus ein QR-Code-Bild generiert. Der Einladungslink enthält keinen Klarnamen, sondern nur einen zufälligen Einladungscode.</td>
+          <td>Deutschland</td>
+          <td><a href="https://goqr.me/de/privacy-policy/" target="_blank" rel="noopener">Datenschutzerklärung</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info">Alle aufgeführten Drittanbieter wurden auf DSGVO-Konformität geprüft. Soweit Daten in Drittländer übermittelt werden, erfolgt dies auf Basis von Standardvertragsklauseln gemäß Art. 46 DSGVO.</div>
+  </div>
+
+  <hr/>
+
+  <!-- 10 -->
+  <div class="section" id="nicht">
+    <div class="slabel">Transparenz</div>
+    <h2>10. Was wir nicht tun</h2>
+    <ul>
+      <li>Kein Verkauf und keine Weitergabe von Nutzerdaten an Werbetreibende oder sonstige Dritte</li>
+      <li>Keine Analyse von Nachrichteninhalten zu Werbezwecken</li>
+      <li>Keine Einbindung von Tracking-Diensten wie Google Analytics oder Facebook Pixel</li>
+      <li>Keine Werbung innerhalb des Dienstes</li>
+      <li>Kein Profiling oder automatisierte Entscheidungsfindung im Sinne von Art. 22 DSGVO</li>
+    </ul>
+  </div>
+
+  <hr/>
+
+  <!-- 11 -->
+  <div class="section" id="rechte">
+    <div class="slabel">Art. 15–21 DSGVO</div>
+    <h2>11. Ihre Rechte nach der DSGVO</h2>
+    <p>Sie haben gegenüber dem Verantwortlichen folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:</p>
+    <ul>
+      <li>Recht auf Auskunft über die gespeicherten Daten (Art. 15 DSGVO)</li>
+      <li>Recht auf Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
+      <li>Recht auf Löschung — direkt über die App-Einstellungen ausübbar (Art. 17 DSGVO)</li>
+      <li>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+      <li>Recht auf Datenübertragbarkeit — Datenexport über die Einstellungen verfügbar (Art. 20 DSGVO)</li>
+      <li>Recht auf Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+      <li>Recht auf Widerruf einer erteilten Einwilligung (Art. 7 Abs. 3 DSGVO)</li>
+    </ul>
+    <p>Zur Ausübung Ihrer Rechte wenden Sie sich an: <strong>privacy@lumestack.de</strong></p>
+    <p>Sie haben zudem das Recht, sich bei der zuständigen Datenschutzaufsichtsbehörde zu beschweren.</p>
+  </div>
+
+  <hr/>
+
+  <!-- 12 -->
+  <div class="section" id="cookies">
+    <div class="slabel">Art. 6 Abs. 1 lit. b DSGVO</div>
+    <h2>12. Cookies und lokale Speicherung</h2>
+    <p>Nokki verwendet ausschließlich technisch notwendige Cookies und lokale Speichertechnologien für den Betrieb des Dienstes:</p>
+    <ul>
+      <li>Authentifizierungstoken zur Aufrechterhaltung der Anmeldesitzung</li>
+      <li>Spracheinstellungen und Designpräferenzen</li>
+      <li>Technische Einstellungen der Benutzeroberfläche</li>
+    </ul>
+    <p>Es werden keine Tracking-Cookies, Analyse-Cookies oder Cookies von Werbetreibenden eingesetzt.</p>
+  </div>
+
+  <hr/>
+
+  <!-- 13 -->
+  <div class="section" id="kontakt">
+    <div class="slabel">Kontakt</div>
+    <h2>13. Datenschutzkontakt</h2>
+    <p>Bei Fragen, Anmerkungen oder zur Ausübung Ihrer Rechte wenden Sie sich bitte an:</p>
+    <p><strong>E-Mail:</strong> privacy@lumestack.de</p>
+    <p>Anfragen werden innerhalb der gesetzlichen Frist von einem Monat beantwortet (Art. 12 Abs. 3 DSGVO).</p>
+  </div>
+
+  <div class="footer-nav">
+    <a href="/">Startseite</a>
+    <a href="/impressum.html">Impressum</a>
+    <a href="/agb.html">AGB</a>
+    <a href="/login">Web App</a>
+  </div>
+</div>
+</body>
+</html>

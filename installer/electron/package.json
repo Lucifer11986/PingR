@@ -1,0 +1,67 @@
+{
+  "name": "nokki-desktop",
+  "version": "1.0.0",
+  "description": "Nokki Desktop Messenger",
+  "author": "Lumestack",
+  "homepage": "https://lumestack.de",
+  "desktopName": "Nokki",
+  "license": "UNLICENSED",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "build:win": "electron-builder --win nsis --x64 --publish never",
+    "build:mac": "electron-builder --mac dmg zip --universal --publish never",
+    "build:linux": "electron-builder --linux AppImage deb --x64 --publish never",
+    "build:all": "electron-builder --win nsis --x64 --linux AppImage deb --x64 --publish never"
+  },
+  "build": {
+    "appId": "de.lumestack.nokki",
+    "productName": "Nokki",
+    "copyright": "Copyright © Lumestack",
+    "asar": true,
+    "artifactName": "Nokki-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "../../desktop-dist"
+    },
+    "files": [
+      "main.js",
+      "offline.html",
+      "assets/**/*",
+      "package.json"
+    ],
+    "icon": "assets/icon.png",
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Nokki",
+      "uninstallDisplayName": "Nokki"
+    },
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }],
+      "category": "public.app-category.social-networking",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "extendInfo": {
+        "NSCameraUsageDescription": "Nokki benötigt die Kamera für Videoanrufe.",
+        "NSMicrophoneUsageDescription": "Nokki benötigt das Mikrofon für Sprach- und Videoanrufe."
+      }
+    },
+    "linux": {
+      "target": [{ "target": "AppImage", "arch": ["x64"] }, { "target": "deb", "arch": ["x64"] }],
+      "category": "Network;InstantMessaging",
+      "syncDesktopName": true,
+      "synopsis": "Nokki Desktop Messenger",
+      "maintainer": "Lumestack"
+    }
+  },
+  "devDependencies": {
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3"
+  }
+}

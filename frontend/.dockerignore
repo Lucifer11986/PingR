@@ -1,0 +1,6 @@
+node_modules
+dist
+.env
+.env.*
+public/admin.html.backup*
+npm-debug.log*

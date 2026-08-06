@@ -1,0 +1,55 @@
+{
+  "name": "pingr-backend",
+  "version": "1.21.0",
+  "description": "PingR Messenger Backend",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "node node_modules/typescript/bin/tsc",
+    "test": "node --test -r ts-node/register src/tests/*.test.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "axios": "^1.19.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "cron-parser": "^5.4.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.22.2",
+    "express-rate-limit": "^7.1.5",
+    "ioredis": "^5.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "mediasoup": "^3.19.22",
+    "mongoose": "^8.24.2",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^9.0.4",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.3",
+    "web-push": "^3.6.6",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.10.6",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^6.4.14",
+    "@types/qrcode": "^1.5.6",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "engine.io": "^6.6.9",
+    "socket.io-adapter": "^2.5.8",
+    "socket.io-parser": "^4.2.7",
+    "tar": "^7.5.22",
+    "ws": "^8.21.2"
+  }
+}

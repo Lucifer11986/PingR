@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/><title>Dokumentation – Nokki Dev</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#08090f;color:#f1f0f8;line-height:1.6}nav{background:#0d0f18;border-bottom:1px solid rgba(255,255,255,.08);padding:0 4%;height:64px;display:flex;align-items:center;justify-content:space-between}.logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:12px}.logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#b46a0e,#e8b86d);display:flex;align-items:center;justify-content:center}.btn{padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;background:linear-gradient(135deg,#b46a0e,#e8b86d);color:#fff;text-decoration:none}.hero{padding:120px 5% 60px;text-align:center}h1{font-size:clamp(40px,6vw,72px);font-weight:900;letter-spacing:-2.5px;background:linear-gradient(135deg,#b46a0e,#e8b86d);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.content{padding:60px 5%;max-width:900px;margin:0 auto}.section{background:#0d0f18;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:32px;margin-bottom:24px}.section h2{font-size:24px;margin-bottom:16px}.section p{color:#8b8aa8;font-size:14px;line-height:1.7;margin-bottom:12px}.code{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:8px;padding:16px;font-family:monospace;font-size:13px;overflow-x:auto}code{color:#86efac}</style>
+</head>
+<body>
+<nav><div class="logo"><div class="logo-icon">🤖</div><span>Nokki <span style="color:#8b8aa8;font-weight:500">Developers</span></span></div><a href="/developers" class="btn">← Zurück</a></nav>
+<section class="hero"><h1>Dokumentation</h1><p style="font-size:18px;color:#8b8aa8;max-width:600px;margin:0 auto">Alles was du wissen musst um Bots für Nokki zu bauen</p></section>
+<div class="content">
+<div class="section"><h2>⚠️ Beta-Status</h2><p>Die Developer Platform befindet sich in der Beta. Eine öffentliche, versionierte REST-API und offizielle SDKs sind noch nicht freigegeben. Verwende nur die hier dokumentierten Portal- und Bot-Funktionen.</p></div>
+<div class="section"><h2>🚀 Quick Start</h2><p>In wenigen Schritten zum ersten Bot:</p><div class="code">1. Developer-Account unter <code>/dev-register</code> erstellen<br>2. API-Key einmalig sicher speichern<br>3. Bot im Dashboard erstellen<br>4. Installationslink an einen Gruppenadmin senden<br>5. Webhook im Portal registrieren und testen</div></div>
+
+<div class="section"><h2>📚 Core Konzepte</h2><p><strong>Bots:</strong> Automatisierte Accounts die mit Nutzern interagieren können</p><p><strong>Channels:</strong> Öffentliche Broadcast-Kanäle (wie Telegram Channels)</p><p><strong>Messages:</strong> Text, Bilder, Files, Voice - mit Rich Formatting</p><p><strong>Webhooks:</strong> Echtzeit-Benachrichtigungen für Events</p><p><strong>Permissions:</strong> Granulare Berechtigungen die User authorisieren</p></div>
+
+<div class="section"><h2>🔑 Authentication</h2><p>Alle API-Requests benötigen einen Bearer Token im Authorization Header:</p><div class="code"><code>Authorization: Bearer sk_live_abc123...</code></div><p style="margin-top:12px">API Keys im Dashboard erstellen: <a href="/dashboard" style="color:#e8b86d">Dashboard →</a></p></div>
+
+<div class="section"><h2>📡 Aktuell verfügbare Bereiche</h2><p><strong>/api/dev/bots</strong> – eigene Bots verwalten</p><p><strong>/api/bot-webhooks</strong> – sichere Webhooks verwalten</p><p><strong>/api/bot-scheduler</strong> – geplante Bot-Nachrichten</p><p><strong>/api/bot-analytics</strong> – gespeicherte Bot-Metriken</p><p>Die vollständigen Methoden und Berechtigungen findest du im eingeloggten Wiki.</p></div>
+
+<div class="section"><h2>🔔 Webhooks</h2><p>Registriere im Developer-Portal eine öffentliche HTTPS-URL. Lokale und private Netzwerkziele werden aus Sicherheitsgründen abgewiesen.</p><div class="code"><code>Events: message.create, message.delete, message.edit, member.join, member.leave, command.execute</code></div><p style="margin-top:12px">Jede Auslieferung enthält eine HMAC-SHA256-Signatur. Das Secret wird nur beim Erzeugen vollständig angezeigt.</p></div>
+
+<div class="section"><h2>📦 SDKs</h2><p>Offizielle SDKs sind noch nicht veröffentlicht. Installiere derzeit keine Pakete, die sich ohne Nachweis als offizielles Nokki-SDK ausgeben.</p></div>
+
+<div class="section"><h2>💡 Beispiele</h2><p>Echo Bot, Welcome Bot, Moderation Bot, AI Assistant - Code-Beispiele für alle gängigen Use-Cases</p><p style="margin-top:12px"><a href="/examples.html" style="color:#e8b86d">Beispiele ansehen →</a></p></div>
+</div>
+<footer style="border-top:1px solid rgba(255,255,255,.08);padding:40px 5%;background:#0d0f18;text-align:center;margin-top:80px"><p style="font-size:13px;color:#8b8aa8">© 2026 Nokki Developer Platform</p></footer>
+</body>
+</html>

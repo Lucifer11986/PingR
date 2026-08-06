@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Nokki für Windows, macOS und Linux herunterladen – oder direkt im Browser starten.">
+<meta name="theme-color" content="#090a10">
+<title>Nokki herunterladen – Desktop-App</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}body,h1,h2,h3,p{margin:0}
+:root{--bg:#090a10;--panel:#11131c;--panel2:#171923;--text:#f5f2eb;--muted:#a2a0ae;--dim:#747586;--line:rgba(255,255,255,.09);--gold:#e8b86d;--amber:#b46a0e;--green:#48d483;--red:#ef8b8b;--shadow:0 24px 80px rgba(0,0,0,.38)}
+body{min-height:100vh;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}
+.nav{height:72px;border-bottom:1px solid var(--line);background:rgba(9,10,16,.84);backdrop-filter:blur(18px);position:sticky;top:0;z-index:20}.nav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.3px}.brand img{width:38px;height:38px;border-radius:11px;object-fit:cover;box-shadow:0 0 0 5px rgba(232,184,109,.08)}.navlinks{display:flex;align-items:center;gap:8px}.navlink{font-size:14px;color:var(--muted);padding:9px 13px;border-radius:9px}.navlink:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.hero{position:relative;padding:92px 0 60px;text-align:center;isolation:isolate}.hero::before{content:"";position:absolute;z-index:-1;width:800px;height:520px;top:-120px;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(232,184,109,.15),transparent 65%);pointer-events:none}.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(232,184,109,.25);background:rgba(232,184,109,.07);color:var(--gold);padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.hero h1{font-size:clamp(42px,7vw,76px);line-height:1.02;letter-spacing:-.055em;margin:22px auto 18px;max-width:920px}.gradient{background:linear-gradient(135deg,#f6dba8,var(--gold) 50%,#b86d15);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{color:var(--muted);font-size:clamp(16px,2vw,20px);max-width:650px;margin:auto}.hero-actions{margin-top:30px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:11px 18px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--text);font-weight:700;font-size:14px;cursor:pointer;transition:.2s}.btn:hover:not([aria-disabled="true"]){transform:translateY(-2px);background:rgba(255,255,255,.08);border-color:rgba(232,184,109,.3)}.btn.primary{border:0;background:linear-gradient(135deg,var(--amber),var(--gold));color:#171008;box-shadow:0 8px 28px rgba(180,106,14,.28)}.btn.primary:hover{box-shadow:0 12px 35px rgba(232,184,109,.28)}.meta{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;color:var(--dim);font-size:12px;margin-top:18px}
+.recommend{margin:8px auto 58px;max-width:760px;background:linear-gradient(140deg,rgba(232,184,109,.11),rgba(255,255,255,.025));border:1px solid rgba(232,184,109,.28);border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;text-align:left;box-shadow:var(--shadow)}.recommend-icon{width:52px;height:52px;border-radius:14px;background:rgba(232,184,109,.12);display:grid;place-items:center;font-size:25px;flex:none}.recommend-copy{flex:1}.recommend-copy small{color:var(--gold);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.recommend-copy strong{display:block;font-size:17px;margin-top:2px}.recommend-copy p{font-size:13px;color:var(--muted)}
+.section{padding:64px 0}.section.alt{background:#0c0d14;border-block:1px solid var(--line)}.heading{text-align:center;max-width:650px;margin:0 auto 34px}.heading h2{font-size:clamp(28px,4vw,42px);letter-spacing:-.035em}.heading p{color:var(--muted);margin-top:8px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{position:relative;background:linear-gradient(155deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:26px;overflow:hidden;transition:.25s}.card:hover{border-color:rgba(232,184,109,.24);transform:translateY(-3px);box-shadow:var(--shadow)}.card.recommended{border-color:rgba(232,184,109,.48);box-shadow:0 0 0 1px rgba(232,184,109,.06),var(--shadow)}.corner{position:absolute;right:15px;top:15px;background:rgba(232,184,109,.12);color:var(--gold);border:1px solid rgba(232,184,109,.25);border-radius:999px;padding:4px 9px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;display:none}.recommended .corner{display:block}.os-icon{width:52px;height:52px;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:15px;display:grid;place-items:center;font-size:25px;margin-bottom:18px}.card h3{font-size:22px;letter-spacing:-.02em}.card>p{color:var(--muted);font-size:13px;margin:5px 0 20px}.packages{display:grid;gap:10px}.package{border:1px solid var(--line);background:rgba(0,0,0,.14);border-radius:12px;padding:12px}.package-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.package-name{font-size:13px;font-weight:750}.state{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--dim);white-space:nowrap}.dot{width:7px;height:7px;border-radius:50%;background:#7b7d8c}.state.ok{color:#9af0bd}.state.ok .dot{background:var(--green);box-shadow:0 0 10px rgba(72,212,131,.55)}.state.missing{color:#d7a4a4}.state.missing .dot{background:var(--red)}.package .btn{width:100%;min-height:40px;margin-top:10px;padding:8px 12px}.package .btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}.package-note{font-size:10px;color:var(--dim);margin-top:7px}.web-card{margin-top:18px;background:linear-gradient(120deg,rgba(232,184,109,.08),rgba(139,92,246,.055));border:1px solid var(--line);border-radius:18px;padding:23px;display:flex;align-items:center;gap:18px}.web-card .os-icon{margin:0;flex:none}.web-copy{flex:1}.web-copy h3{font-size:18px}.web-copy p{color:var(--muted);font-size:13px}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.trust-item{border:1px solid var(--line);border-radius:16px;padding:22px;background:rgba(255,255,255,.018)}.trust-item span{font-size:24px}.trust-item h3{font-size:15px;margin:9px 0 4px}.trust-item p{font-size:13px;color:var(--muted)}
+.tabs{display:flex;justify-content:center;gap:8px;margin-bottom:22px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:10px;padding:9px 15px;cursor:pointer}.tab[aria-selected="true"]{color:#171008;background:var(--gold);border-color:var(--gold);font-weight:800}.instructions{max-width:820px;margin:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:28px}.panel[hidden]{display:none}.panel h3{margin-bottom:12px}.steps{padding-left:22px;color:var(--muted)}.steps li{padding:5px 0}.steps strong{color:var(--text)}.code{margin-top:16px;background:#090a0f;border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:#d9c6a5;font:12px ui-monospace,SFMono-Regular,Consolas,monospace;overflow:auto}
+.faq{max-width:820px;margin:auto}details{border:1px solid var(--line);background:var(--panel);border-radius:13px;margin-bottom:10px}summary{cursor:pointer;list-style:none;padding:18px 20px;font-weight:700;display:flex;justify-content:space-between;gap:12px}summary::-webkit-details-marker{display:none}summary::after{content:"+";color:var(--gold);font-size:20px;line-height:1}details[open] summary::after{content:"−"}.answer{border-top:1px solid var(--line);padding:15px 20px;color:var(--muted);font-size:14px}
+footer{padding:34px 0;border-top:1px solid var(--line);color:var(--dim);font-size:12px}.footer-row{display:flex;align-items:center;justify-content:space-between;gap:16px}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.footer-links a:hover{color:var(--text)}
+@media(max-width:850px){.cards,.trust{grid-template-columns:1fr}.card{max-width:590px;width:100%;margin:auto}.recommend,.web-card{align-items:flex-start}.navlinks .hide-mobile{display:none}}
+@media(max-width:560px){.wrap{width:min(100% - 28px,1160px)}.hero{padding-top:64px}.hero h1{font-size:43px}.recommend,.web-card{flex-direction:column}.recommend .btn,.web-card .btn{width:100%}.navlink{padding:8px}.navlinks .home-label{display:none}.instructions{padding:21px}.footer-row{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/landing.html"><img src="/nokki-logo.png" alt=""><span>Nokki</span></a>
+    <nav class="navlinks" aria-label="Hauptnavigation"><a class="navlink hide-mobile" href="/landing.html">Startseite</a><a class="navlink" href="/chat">Web-App</a><a class="navlink" href="/landing.html#faq">Hilfe</a></nav>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Desktop · Version 1.0.0</div>
+      <h1>Deine Gespräche.<br><span class="gradient">Direkt auf deinem Desktop.</span></h1>
+      <p class="lead">Nokki als eigene App für Windows, macOS und Linux – mit System-Tray und Unterstützung für Sprach- und Videoanrufe.</p>
+      <div class="hero-actions"><a class="btn primary" id="hero-download" href="#platforms">Download auswählen</a><a class="btn" href="/chat">Im Browser starten →</a></div>
+      <div class="meta"><span>Version 1.0.0</span><span>•</span><span>Kostenlos</span><span>•</span><span>Web-App jederzeit verfügbar</span></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <aside class="recommend" aria-live="polite">
+      <div class="recommend-icon" id="recommend-icon">🖥️</div>
+      <div class="recommend-copy"><small>Für dein Gerät empfohlen</small><strong id="recommend-title">Passenden Download auswählen</strong><p id="recommend-text">Wir erkennen dein Betriebssystem automatisch.</p></div>
+      <a class="btn primary" id="recommend-button" href="#platforms">Zu den Downloads</a>
+    </aside>
+  </div>
+
+  <section class="section alt" id="platforms">
+    <div class="wrap">
+      <div class="heading"><h2>Wähle deine Plattform</h2><p>Die Verfügbarkeit wird direkt auf dem Server geprüft. Nicht hochgeladene Pakete bleiben eindeutig deaktiviert.</p></div>
+      <div class="cards">
+        <article class="card" data-os-card="windows"><span class="corner">Empfohlen</span><div class="os-icon">⊞</div><h3>Windows</h3><p>Für Windows 10 und 11, 64-Bit.</p><div class="packages">
+          <div class="package" data-package data-url="/downloads/Nokki-1.0.0-win-x64.exe"><div class="package-head"><span class="package-name">Setup-Assistent (.exe)</span><span class="state"><i class="dot"></i><span>Wird geprüft</span></span></div><a class="btn" aria-disabled="true">Prüfen …</a><div class="package-note">Empfohlen · installiert Nokki regulär</div></div>
+          <div class="package" data-package data-url="/downloads/Nokki-1.0.0-windows-portable-x64.zip"><div class="package-head"><span class="package-name">Portable Version (.zip)</span><span class="state"><i class="dot"></i><span>Wird geprüft</span></span></div><a class="btn" aria-disabled="true">Prüfen …</a><div class="package-note">Ohne Installation · entpacken und starten</div></div>
+        </div></article>
+        <article class="card" data-os-card="macos"><span class="corner">Empfohlen</span><div class="os-icon">●</div><h3>macOS</h3><p>Universal-Build für Apple Silicon und Intel.</p><div class="packages">
+          <div class="package" data-package data-url="/downloads/Nokki-1.0.0-mac-universal.dmg"><div class="package-head"><span class="package-name">Disk Image (.dmg)</span><span class="state"><i class="dot"></i><span>Wird geprüft</span></span></div><a class="btn" aria-disabled="true">Prüfen …</a><div class="package-note">Empfohlen · Nokki in Programme ziehen</div></div>
+          <div class="package" data-package data-url="/downloads/Nokki-1.0.0-mac-universal.zip"><div class="package-head"><span class="package-name">Archiv (.zip)</span><span class="state"><i class="dot"></i><span>Wird geprüft</span></span></div><a class="btn" aria-disabled="true">Prüfen …</a><div class="package-note">Alternative ohne DMG</div></div>
+        </div></article>
+        <article class="card" data-os-card="linux"><span class="corner">Empfohlen</span><div class="os-icon">🐧</div><h3>Linux</h3><p>Pakete für gängige 64-Bit-Distributionen.</p><div class="packages">
+          <div class="package" data-package data-url="/downloads/Nokki-1.0.0-linux-amd64.deb"><div class="package-head"><span class="package-name">Debian-Paket (.deb)</span><span class="state"><i class="dot"></i><span>Wird geprüft</span></span></div><a class="btn" aria-disabled="true">Prüfen …</a><div class="package-note">Ubuntu, Debian, Mint und ähnliche</div></div>
+          <div class="package" data-package data-url="/downloads/Nokki-1.0.0-linux-x86_64.AppImage"><div class="package-head"><span class="package-name">AppImage</span><span class="state"><i class="dot"></i><span>Wird geprüft</span></span></div><a class="btn" aria-disabled="true">Prüfen …</a><div class="package-note">Distributionsunabhängig · ohne Installation</div></div>
+        </div></article>
+      </div>
+      <div class="web-card"><div class="os-icon">🌐</div><div class="web-copy"><h3>Du möchtest nichts installieren?</h3><p>Nutze Nokki direkt im Browser. Die Web-App ist immer auf dem aktuellen Stand.</p></div><a class="btn primary" href="/chat">Web-App öffnen</a></div>
+    </div>
+  </section>
+
+  <section class="section"><div class="wrap"><div class="trust"><div class="trust-item"><span>🛡️</span><h3>Klare Download-Quellen</h3><p>Alle Pakete werden direkt von lumestack.de geladen.</p></div><div class="trust-item"><span>🚫</span><h3>Keine Werbung</h3><p>Die Desktop-App enthält keine Werbeeinblendungen.</p></div><div class="trust-item"><span>🔄</span><h3>Freie Wahl</h3><p>Wechsle jederzeit zwischen Desktop-App und Web-App.</p></div></div></div></section>
+
+  <section class="section alt" id="installation"><div class="wrap"><div class="heading"><h2>In wenigen Schritten startklar</h2><p>Wähle dein Betriebssystem für die passende Installationsanleitung.</p></div>
+    <div class="tabs" role="tablist" aria-label="Betriebssystem"><button class="tab" role="tab" aria-selected="true" data-tab="windows">Windows</button><button class="tab" role="tab" aria-selected="false" data-tab="macos">macOS</button><button class="tab" role="tab" aria-selected="false" data-tab="linux">Linux</button></div>
+    <div class="instructions">
+      <div class="panel" data-panel="windows"><h3>Installation unter Windows</h3><ol class="steps"><li>Lade den Setup-Assistenten oder die portable ZIP-Datei herunter.</li><li>Öffne die Datei. Bei einer SmartScreen-Warnung prüfe den Herausgeber und wähle bei Vertrauen <strong>Weitere Informationen → Trotzdem ausführen</strong>.</li><li>Melde dich mit deinem Nokki-Konto an.</li></ol></div>
+      <div class="panel" data-panel="macos" hidden><h3>Installation unter macOS</h3><ol class="steps"><li>Öffne die DMG-Datei und ziehe Nokki in den Ordner <strong>Programme</strong>.</li><li>Falls macOS die App blockiert, öffne <strong>Systemeinstellungen → Datenschutz &amp; Sicherheit</strong> und erlaube den Start nur, wenn du der Quelle vertraust.</li><li>Starte Nokki aus dem Programme-Ordner.</li></ol></div>
+      <div class="panel" data-panel="linux" hidden><h3>Installation unter Linux</h3><ol class="steps"><li>Für Debian/Ubuntu: lade das DEB-Paket und installiere es mit deinem Paketmanager.</li><li>Für AppImage: mache die Datei ausführbar und starte sie.</li></ol><div class="code">chmod +x Nokki-1.0.0-linux-x86_64.AppImage<br>./Nokki-1.0.0-linux-x86_64.AppImage</div></div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="wrap"><div class="heading"><h2>Fragen zum Download</h2></div><div class="faq">
+    <details><summary>Warum zeigt mein System eine Sicherheitswarnung?</summary><div class="answer">Windows SmartScreen und macOS Gatekeeper können bei neuen oder noch nicht signierten Apps warnen. Lade Nokki ausschließlich von dieser Seite und prüfe die Quelle, bevor du eine Warnung übergehst.</div></details>
+    <details><summary>Was ist der Unterschied zwischen Setup und portabler Version?</summary><div class="answer">Das Setup installiert Nokki normal im System. Die portable Windows-Version wird nur entpackt und benötigt keine Installation – praktisch für USB-Sticks oder Geräte ohne Installationsrechte.</div></details>
+    <details><summary>Ein Download ist noch nicht verfügbar – was nun?</summary><div class="answer">Die Schaltfläche wird automatisch aktiviert, sobald das passende Paket auf dem Server liegt. Bis dahin kannst du Nokki ohne Einschränkung im Browser verwenden.</div></details>
+    <details><summary>Wie prüfe ich eine heruntergeladene Datei?</summary><div class="answer">Unter Linux oder macOS kannst du mit <code>sha256sum DATEI</code> beziehungsweise <code>shasum -a 256 DATEI</code> einen Prüfschlüssel erzeugen. Unter Windows verwendest du <code>Get-FileHash DATEI</code> in PowerShell.</div></details>
+  </div></div></section>
+</main>
+<footer><div class="wrap footer-row"><span>© 2026 Nokki · Multi-Identity Messenger</span><div class="footer-links"><a href="/landing.html">Startseite</a><a href="/datenschutz.html">Datenschutz</a><a href="/impressum.html">Impressum</a></div></div></footer>
+<script>
+(() => {
+  const selectTab = name => {
+    document.querySelectorAll('.tab').forEach(item => item.setAttribute('aria-selected', String(item.dataset.tab === name)));
+    document.querySelectorAll('.panel').forEach(panel => { panel.hidden = panel.dataset.panel !== name; });
+  };
+  document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => selectTab(tab.dataset.tab)));
+  const detected = (() => {
+    const value = `${navigator.userAgentData?.platform || navigator.platform || ''} ${navigator.userAgent || ''}`.toLowerCase();
+    if (value.includes('win')) return 'windows';
+    if (value.includes('mac')) return 'macos';
+    if (value.includes('linux') || value.includes('x11')) return 'linux';
+    return 'unknown';
+  })();
+  const labels = {windows:['⊞','Windows','Windows-Download'],macos:['●','macOS','macOS-Download'],linux:['🐧','Linux','Linux-Download']};
+  if (labels[detected]) {
+    document.querySelector(`[data-os-card="${detected}"]`)?.classList.add('recommended');
+    document.getElementById('recommend-icon').textContent = labels[detected][0];
+    document.getElementById('recommend-title').textContent = `Nokki für ${labels[detected][1]}`;
+    document.getElementById('recommend-text').textContent = 'Wir haben dein Betriebssystem erkannt. Verfügbare Pakete werden gerade geprüft.';
+    const recommendation = document.getElementById('recommend-button');
+    recommendation.textContent = labels[detected][2];
+    recommendation.href = `#platforms`;
+    selectTab(detected);
+  }
+
+  document.querySelectorAll('[data-package]').forEach(async (item) => {
+    const url = item.dataset.url;
+    const button = item.querySelector('.btn');
+    const state = item.querySelector('.state');
+    const stateText = state.querySelector('span:last-child');
+    let available = false;
+    try { const response = await fetch(url, {method:'HEAD', cache:'no-store'}); available = response.ok; } catch (_) {}
+    state.classList.add(available ? 'ok' : 'missing');
+    stateText.textContent = available ? 'Verfügbar' : 'Noch nicht hochgeladen';
+    button.textContent = available ? 'Herunterladen ↓' : 'Derzeit nicht verfügbar';
+    if (available) { button.href = url; button.removeAttribute('aria-disabled'); button.setAttribute('download',''); }
+    else { button.setAttribute('aria-disabled','true'); button.removeAttribute('href'); }
+  });
+
+  document.addEventListener('click', event => {
+    const disabled = event.target.closest('[aria-disabled="true"]');
+    if (disabled) event.preventDefault();
+  });
+})();
+</script>
+</body>
+</html>

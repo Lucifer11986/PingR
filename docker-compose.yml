@@ -1,0 +1,108 @@
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8084:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./desktop-dist:/var/www/downloads:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
+      - /etc/nginx/dhparam.pem:/etc/nginx/dhparam.pem:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - pingr-net
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=https://lumestack.de
+        - VITE_WS_URL=wss://lumestack.de
+      target: production
+    networks:
+      - pingr-net
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  backend:
+    build: ./backend
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - MONGO_URI=mongodb://mongo:27017/pingr
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET fehlt}
+      - REFRESH_SECRET=${REFRESH_SECRET:?REFRESH_SECRET fehlt}
+      - ADMIN_SECRET=${ADMIN_SECRET:?ADMIN_SECRET fehlt}
+      - PORT=4000
+      - APP_URL=${APP_URL}
+      - SERVER_IP=${SERVER_IP}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_SECURE=${SMTP_SECURE}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - FIELD_ENCRYPTION_SECRET=${FIELD_ENCRYPTION_SECRET:?FIELD_ENCRYPTION_SECRET fehlt}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - GITHUB_CALLBACK_URL=${GITHUB_CALLBACK_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL}
+      - VITE_API_URL=${VITE_API_URL}
+      - MEDIASOUP_ANNOUNCED_IP=${SERVER_IP}
+      - MEDIASOUP_MIN_PORT=40000
+      - MEDIASOUP_MAX_PORT=40100
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+      - ./backups:/app/backups:ro
+    networks:
+      - pingr-net
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "40000-40100:40000-40100/udp"
+
+  redis:
+    image: redis:7-alpine
+    container_name: pingr-redis
+    restart: unless-stopped
+    networks:
+      - pingr-net
+    command: redis-server --maxmemory 256mb --maxmemory-policy volatile-lru
+    security_opt:
+      - no-new-privileges:true
+
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE:-pingr}
+    networks:
+      - pingr-net
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  mongo-data:
+
+networks:
+  pingr-net:
+    driver: bridge

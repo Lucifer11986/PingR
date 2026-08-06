@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Preise – Nokki Developer Platform</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08090f;--bg2:#0d0f18;--bg3:#13141f;--amb:#b46a0e;--amb2:#e8b86d;--txt:#f1f0f8;--mut:#8b8aa8;--bdr:rgba(255,255,255,.08);--grn:#22c55e}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6}
+nav{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:0 4%;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:12px}
+.logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--amb),var(--amb2));display:flex;align-items:center;justify-content:center;font-size:20px}
+.btn{padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-primary{background:linear-gradient(135deg,var(--amb),var(--amb2));color:#fff}
+.btn-ghost{background:rgba(255,255,255,.05);color:var(--txt);border:1px solid var(--bdr)}
+.hero{padding:120px 5% 60px;text-align:center}
+h1{font-size:clamp(40px,6vw,72px);font-weight:900;letter-spacing:-2.5px;margin-bottom:20px}
+.gradient-text{background:linear-gradient(135deg,var(--amb),var(--amb2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:18px;color:var(--mut);max-width:600px;margin:0 auto}
+.pricing{padding:60px 5%;max-width:1200px;margin:0 auto}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.price-card{background:var(--bg2);border:2px solid var(--bdr);border-radius:20px;padding:40px;position:relative;transition:all .3s}
+.price-card.featured{border-color:rgba(232,184,109,.4);background:rgba(232,184,109,.03)}
+.price-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--amb),var(--amb2));color:#fff;padding:6px 20px;border-radius:99px;font-size:12px;font-weight:700}
+.price-name{font-size:24px;font-weight:800;margin-bottom:12px}
+.price-amount{font-size:56px;font-weight:900;letter-spacing:-2px;margin-bottom:8px}
+.price-period{font-size:16px;color:var(--mut);margin-bottom:24px}
+.price-desc{font-size:14px;color:var(--mut);margin-bottom:32px;line-height:1.7}
+.price-features{list-style:none;margin-bottom:32px}
+.price-features li{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px;display:flex;align-items:center;gap:10px}
+.price-features li:last-child{border:none}
+.check{color:var(--grn)}
+footer{border-top:1px solid var(--bdr);padding:40px 5%;background:var(--bg2);text-align:center;margin-top:80px}
+footer p{font-size:13px;color:var(--mut)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🤖</div>
+    <span>Nokki <span style="color:var(--mut);font-weight:500">Developers</span></span>
+  </div>
+  <a href="/developers.html" class="btn btn-primary">← Zurück</a>
+</nav>
+
+<section class="hero">
+  <h1><span class="gradient-text">Preise</span></h1>
+  <p class="hero-sub">Für immer kostenlos. Premium-Tiers kommen später.</p>
+</section>
+
+<div class="pricing">
+  <div class="pricing-grid">
+    <!-- Free Tier -->
+    <div class="price-card featured">
+      <div class="price-badge">🎉 Aktuell Verfügbar</div>
+      <h2 class="price-name">Free</h2>
+      <div class="price-amount">€0</div>
+      <div class="price-period">für immer kostenlos</div>
+      <p class="price-desc">Perfekt für die meisten Bots. Alle essentiellen Features inklusive.</p>
+      <ul class="price-features">
+        <li><span class="check">✓</span> Unbegrenzte Bots</li>
+        <li><span class="check">✓</span> 1.000 API Calls / Minute</li>
+        <li><span class="check">✓</span> Real-time Webhooks</li>
+        <li><span class="check">✓</span> 50 MB File Uploads</li>
+        <li><span class="check">✓</span> Community Support</li>
+        <li><span class="check">✓</span> Analytics Dashboard</li>
+        <li><span class="check">✓</span> API Dokumentation</li>
+      </ul>
+      <a href="/register" class="btn btn-primary" style="width:100%;justify-content:center;display:flex">Jetzt starten</a>
+    </div>
+
+    <!-- Pro Tier - Coming Soon -->
+    <div class="price-card" style="opacity:.6">
+      <div class="price-badge" style="background:rgba(234,179,8,.8)">⏳ Q4 2026</div>
+      <h2 class="price-name">Pro</h2>
+      <div class="price-amount">€29</div>
+      <div class="price-period">pro Monat</div>
+      <p class="price-desc">Für professionelle Bots mit höheren Requirements.</p>
+      <ul class="price-features">
+        <li><span class="check">✓</span> Alles aus Free</li>
+        <li><span class="check">✓</span> 10.000 API Calls / Minute</li>
+        <li><span class="check">✓</span> Priority Webhooks</li>
+        <li><span class="check">✓</span> 500 MB File Uploads</li>
+        <li><span class="check">✓</span> Email Support (24h)</li>
+        <li><span class="check">✓</span> Advanced Analytics</li>
+        <li><span class="check">✓</span> Custom Branding</li>
+      </ul>
+      <button class="btn btn-ghost" disabled style="width:100%;opacity:.5;cursor:not-allowed">Demnächst</button>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="price-card" style="opacity:.6">
+      <div class="price-badge" style="background:rgba(234,179,8,.8)">⏳ 2027</div>
+      <h2 class="price-name">Enterprise</h2>
+      <div class="price-amount">Custom</div>
+      <div class="price-period">individuelle Angebote</div>
+      <p class="price-desc">Für große Teams und Unternehmen.</p>
+      <ul class="price-features">
+        <li><span class="check">✓</span> Alles aus Pro</li>
+        <li><span class="check">✓</span> Unbegrenzte API Calls</li>
+        <li><span class="check">✓</span> Dedicated Webhooks</li>
+        <li><span class="check">✓</span> Unbegrenzte Uploads</li>
+        <li><span class="check">✓</span> 24/7 Priority Support</li>
+        <li><span class="check">✓</span> SLA 99.95%</li>
+        <li><span class="check">✓</span> On-Premise Option</li>
+      </ul>
+      <button class="btn btn-ghost" disabled style="width:100%;opacity:.5;cursor:not-allowed">Demnächst</button>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:60px;padding:40px;background:var(--bg2);border:1px solid var(--bdr);border-radius:16px">
+    <h3 style="font-size:24px;font-weight:700;margin-bottom:12px">💡 Hinweis</h3>
+    <p style="color:var(--mut);font-size:15px;line-height:1.7;max-width:600px;margin:0 auto">
+      Die Nokki Developer API ist aktuell komplett <strong style="color:var(--grn)">kostenlos</strong>. 
+      Premium-Tiers kommen erst, wenn die Platform stabil läuft und genug Bots aktiv sind. 
+      Jeder der jetzt startet, behält dauerhaft bessere Konditionen! 🚀
+    </p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Nokki Developer Platform</p>
+</footer>
+</body>
+</html>

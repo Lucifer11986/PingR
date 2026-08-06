@@ -1,0 +1,19 @@
+{
+  "name": "Nokki – Instant Messenger",
+  "short_name": "Nokki",
+  "description": "Moderner Instant Messenger mit ICQ-Charme",
+  "start_url": "/chat",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d14",
+  "theme_color": "#4f6ef7",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "categories": ["social", "communication"],
+  "shortcuts": [
+    { "name": "Chat öffnen", "url": "/chat",  "icons": [{ "src": "/favicon.svg", "sizes": "any" }] },
+    { "name": "Profil",      "url": "/chat",  "icons": [{ "src": "/favicon.svg", "sizes": "any" }] }
+  ]
+}

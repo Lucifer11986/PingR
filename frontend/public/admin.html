@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nokki Admin v2.1.0</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090f;--bg2:#0d0f18;--bg3:#13141f;
+  --amb:#b46a0e;--amb2:#e8b86d;
+  --acc:#4f6ef7;--red:#dc2626;--ora:#ea580c;--grn:#16a34a;
+  --txt:#f1f0f8;--mut:#8b8aa8;--bdr:rgba(255,255,255,.07)
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex}
+
+/* ── Login ── */
+#ls{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:999}
+.lb{background:var(--bg2);border:1px solid var(--bdr);border-radius:20px;padding:40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+
+/* ── Sidebar ── */
+#sidebar{width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--bdr);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
+.sb-logo{padding:20px 16px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr)}
+.sb-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#b46a0e,#e8b86d);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sb-section{padding:12px 10px 4px;font-size:9px;font-weight:700;color:var(--mut);letter-spacing:.1em;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);border:1px solid transparent;margin:1px 8px;transition:all .15s;text-decoration:none;background:none;width:calc(100% - 16px)}
+.sb-item:hover{color:var(--txt);background:rgba(255,255,255,.04)}
+.sb-item.active{color:var(--amb2);background:rgba(232,184,109,.08);border-color:rgba(232,184,109,.15);font-weight:600}
+.sb-item .ic{width:16px;text-align:center;font-size:13px;flex-shrink:0}
+.sb-footer{margin-top:auto;padding:12px 10px;border-top:1px solid var(--bdr)}
+.sb-user{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#b46a0e,#e8b86d);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+
+/* ── Main ── */
+#main{flex:1;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
+#topbar{height:56px;background:var(--bg2);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:10;backdrop-filter:blur(20px)}
+#content{padding:24px;flex:1;max-width:1600px;width:100%}
+
+/* ── Cards ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:all .2s;cursor:pointer}
+.stat-card:hover{border-color:rgba(79,110,247,.35);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--acc),var(--amb2));opacity:0;transition:opacity .2s}
+.stat-card:hover::before{opacity:1}
+.stat-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+.stat-num{font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+.stat-label{font-size:10px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.07em}
+.stat-sub{font-size:10px;color:var(--grn);margin-top:4px}
+
+/* ── Panels ── */
+.panel{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;margin-bottom:20px;overflow:hidden}
+.panel-head{padding:14px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.01)}
+.panel-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse}
+th{padding:10px 16px;text-align:left;font-size:10px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--bdr);background:rgba(255,255,255,.02);white-space:nowrap}
+td{padding:12px 16px;font-size:12px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.03)}
+.empty{text-align:center;padding:28px;color:var(--mut);font-size:12px}
+
+/* ── Badges ── */
+.bdg{display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:600;white-space:nowrap}
+.brd{background:rgba(220,38,38,.12);color:#fca5a5;border:1px solid rgba(220,38,38,.2)}
+.bro{background:rgba(234,88,12,.12);color:#fed7aa;border:1px solid rgba(234,88,12,.2)}
+.bry{background:rgba(217,119,6,.12);color:#fde68a;border:1px solid rgba(217,119,6,.2)}
+.brg{background:rgba(22,163,74,.12);color:#86efac;border:1px solid rgba(22,163,74,.2)}
+.brb{background:rgba(79,110,247,.12);color:#a5b4fc;border:1px solid rgba(79,110,247,.2)}
+.brm{background:rgba(255,255,255,.06);color:var(--mut);border:1px solid var(--bdr)}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:inherit}
+.bp{background:var(--acc);color:#fff}.bp:hover{background:#3b5bdb}
+.br{background:rgba(220,38,38,.15);color:#fca5a5;border:1px solid rgba(220,38,38,.3)}.br:hover{background:rgba(220,38,38,.25)}
+.bg{background:rgba(22,163,74,.15);color:#86efac;border:1px solid rgba(22,163,74,.3)}.bg:hover{background:rgba(22,163,74,.25)}
+.bo{background:rgba(234,88,12,.15);color:#fed7aa;border:1px solid rgba(234,88,12,.3)}
+.bh{background:rgba(255,255,255,.06);color:var(--txt);border:1px solid var(--bdr)}.bh:hover{background:rgba(255,255,255,.1)}
+.bdel{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}.bdel:hover{background:rgba(239,68,68,.2)}
+.bamb{background:linear-gradient(135deg,#b46a0e,#e8b86d);color:#fff;border:none}
+.sm{padding:4px 9px;font-size:11px;border-radius:6px}
+.fw{width:100%}
+
+/* ── Form ── */
+input,select,textarea{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;color:white;font-size:12px;outline:none;color-scheme:dark;font-family:inherit;width:100%}
+input:focus,select:focus,textarea:focus{border-color:rgba(232,184,109,.4)}
+input::placeholder{color:var(--mut)}
+select option{background:#0d0d14}
+textarea{resize:vertical;min-height:72px}
+
+/* ── Mini Chart ── */
+.chart-bar{display:flex;align-items:flex-end;gap:2px;height:60px}
+.chart-bar div{flex:1;border-radius:3px 3px 0 0;min-width:3px;transition:height .5s}
+
+/* ── Progress ── */
+.progress{background:rgba(255,255,255,.08);border-radius:99px;height:6px;overflow:hidden}
+.progress-bar{height:100%;border-radius:99px;transition:width .6s}
+
+/* ── System Status Dot ── */
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-green{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.5)}
+.dot-red{background:#ef4444}
+.dot-yellow{background:#f59e0b}
+
+/* ── Activity Item ── */
+.activity-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+/* ── Quick Action ── */
+.quick-action{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--bdr);background:rgba(255,255,255,.02);cursor:pointer;transition:all .15s;margin-bottom:8px}
+.quick-action:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
+.qa-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+
+/* ── Toast ── */
+#toast{position:fixed;bottom:20px;right:20px;background:#1e293b;border:1px solid var(--bdr);border-radius:10px;padding:10px 16px;font-size:12px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;max-width:300px}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ── Modal ── */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(8px)}
+.modal.open{display:flex}
+.mb{background:var(--bg2);border:1px solid var(--bdr);border-radius:16px;padding:24px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
+.mt{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+
+/* ── Tabs ── */
+.tab-bar{display:flex;gap:4px;padding:4px;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:10px;margin-bottom:20px}
+.tab-btn{flex:1;padding:7px 12px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--mut);background:none;transition:all .15s;white-space:nowrap}
+.tab-btn:hover{color:var(--txt)}
+.tab-btn.active{background:linear-gradient(135deg,#b46a0e,#e8b86d);color:#fff}
+
+/* ── Sections ── */
+.section{display:none}.section.active{display:block}
+
+/* ── Line Chart ── */
+.line-chart{position:relative;height:200px;padding:10px 0}
+.lc-svg{width:100%;height:100%}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease-out}
+
+/* ── Pager ── */
+.pag{display:flex;align-items:center;gap:6px;padding:10px 16px;border-top:1px solid var(--bdr);justify-content:center}
+.ra{display:flex;gap:3px;flex-wrap:wrap}
+.mobile-nav-toggle{display:none}
+
+@media(max-width:900px){
+  #sidebar{position:fixed;top:0;left:0;z-index:120;width:min(280px,86vw);transform:translateX(-100%);transition:transform .2s ease;box-shadow:18px 0 50px rgba(0,0,0,.45)}
+  #sidebar.open{transform:translateX(0)}
+  #main{width:100%}
+  #topbar{padding:0 14px}
+  #content{padding:14px}
+  .mobile-nav-toggle{display:inline-flex;padding:6px 9px}
+  .panel{overflow-x:auto}
+  .panel table{min-width:720px}
+  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+  .stat-grid{grid-template-columns:1fr}
+  .lb{margin:16px;padding:26px 20px}
+  #topbar .btn:not(.mobile-nav-toggle){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="ls">
+  <div class="lb">
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px">
+      <div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#b46a0e,#e8b86d);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 0 8px rgba(232,184,109,.07)">🛡️</div>
+      <div>
+        <div style="font-size:20px;font-weight:800;letter-spacing:-.3px">Nokki Admin</div>
+        <div style="font-size:10px;color:var(--mut)">Geschützter Bereich · v2.1.0</div>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--bdr);margin:16px 0"></div>
+    <div style="display:flex;gap:4px;background:rgba(255,255,255,.04);border-radius:10px;padding:4px;margin-bottom:14px">
+      <button id="lt-secret" onclick="setLoginType('secret')" style="flex:1;padding:8px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:linear-gradient(135deg,#b46a0e,#e8b86d);color:#fff">🔑 Superadmin</button>
+      <button id="lt-staff" onclick="setLoginType('staff')" style="flex:1;padding:8px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-weight:500;background:none;color:var(--mut)">👤 Mitarbeiter</button>
+    </div>
+    <input type="password" id="si" placeholder="Admin-Secret" style="margin-bottom:10px;text-align:center;letter-spacing:2px"/>
+    <button class="btn bamb fw" id="lb-btn" onclick="doLogin()">🔓 Einloggen</button>
+    <div id="ls-status" style="margin-top:10px;font-size:12px;min-height:18px;text-align:center;color:#f87171"></div>
+    <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;gap:8px">
+      <div id="login-server-dot" style="width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:pulse 2s infinite"></div>
+      <span id="login-server-text" style="font-size:11px;color:var(--mut)">Server wird geprüft…</span>
+      <span style="font-size:11px;color:var(--bdr)">·</span>
+      <a href="/" style="font-size:11px;color:var(--mut);text-decoration:none">← Startseite</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app" style="display:none;width:100%;display:none">
+
+  <!-- ── SIDEBAR ── -->
+  <div id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">🛡️</div>
+      <div>
+        <div style="font-size:13px;font-weight:800;letter-spacing:-.2px">Nokki Admin</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
+          <div style="width:5px;height:5px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite"></div>
+          <span style="font-size:9px;color:var(--mut)">LIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:10px 8px 4px">
+      <div class="sb-section">Hauptmenü</div>
+      <button class="sb-item active" data-section="dashboard" onclick="showSection('dashboard')"><span class="ic">🏠</span> Dashboard</button>
+      <button class="sb-item" data-section="monitoring" onclick="showSection('monitoring')"><span class="ic">📊</span> Monitoring</button>
+
+      <div class="sb-section">Verwaltung</div>
+      <button class="sb-item" data-section="users" onclick="showSection('users')"><span class="ic">👥</span> Nutzer</button>
+      <button class="sb-item" data-section="security" onclick="showSection('security')"><span class="ic">🔐</span> Sicherheit</button>
+      <button class="sb-item" data-section="reports" onclick="showSection('reports')"><span class="ic">⚠️</span> Meldungen</button>
+      <button class="sb-item" data-section="statistics" onclick="showSection('statistics')"><span class="ic">📈</span> Statistiken</button>
+      <button class="sb-item" data-section="database" onclick="showSection('database')" id="sb-db" style="display:none"><span class="ic">🗄️</span> Datenbank</button>
+      <button class="sb-item" data-section="staff" onclick="showSection('staff')" id="sb-staff" style="display:none"><span class="ic">👔</span> Mitarbeiter</button>
+
+      <div class="sb-section">Developer</div>
+      <button class="sb-item" data-section="devportal" onclick="showSection('devportal')"><span class="ic">🤖</span> Developer Portal</button>
+
+      <div class="sb-section">System</div>
+      <button class="sb-item" data-section="logs" onclick="showSection('logs')"><span class="ic">📋</span> System Logs</button>
+      <button class="sb-item" onclick="showBroadcast()"><span class="ic">📢</span> Broadcast</button>
+      <button class="sb-item" onclick="showSettings()"><span class="ic">⚙️</span> Einstellungen</button>
+    </div>
+
+    <div class="sb-footer">
+      <!-- Schnellzugriff -->
+      <div style="margin-bottom:10px">
+        <div class="sb-section" style="padding:0 0 6px">Schnellzugriff</div>
+        <button class="sb-item" onclick="showBroadcast()" style="margin:0 0 2px;width:100%;background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.2);color:#fca5a5"><span class="ic">📢</span> Broadcast senden</button>
+        <button class="sb-item" onclick="findUser()" style="margin:0 0 2px;width:100%;"><span class="ic">🔍</span> Benutzer suchen</button>
+        <button class="sb-item" onclick="showSection('logs')" style="margin:0 0 2px;width:100%;"><span class="ic">📋</span> System Logs</button>
+        <button class="sb-item" onclick="doBackup()" style="margin:0;width:100%;"><span class="ic">💾</span> Datenbank Backup</button>
+      </div>
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-av">A</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="sb-name">Administrator</div>
+          <div style="font-size:10px;color:var(--grn)">● Online</div>
+        </div>
+        <button class="btn sm bh" onclick="doLogout()" title="Abmelden" style="padding:4px 7px;flex-shrink:0">⏏️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ── -->
+  <div id="main">
+
+    <!-- Topbar -->
+    <div id="topbar">
+      <button class="btn bh mobile-nav-toggle" id="mobile-nav-toggle" type="button" aria-label="Navigation öffnen" aria-expanded="false">☰</button>
+      <div style="flex:1">
+        <div id="tb-title" style="font-size:15px;font-weight:700">Dashboard</div>
+        <div style="font-size:10px;color:var(--mut)" id="tb-sub">Übersicht aller Systemaktivitäten in Echtzeit</div>
+      </div>
+      <span id="htime" style="font-size:11px;color:var(--mut)"></span>
+      <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:8px;padding:5px 10px">
+        <div class="status-dot dot-yellow" id="top-server-dot" style="animation:pulse 2s infinite"></div>
+        <span id="hol" style="font-size:11px;font-weight:600">0 online</span>
+      </div>
+      <button class="btn bh sm" onclick="loadAll()" title="Aktualisieren">🔄</button>
+      <button class="btn bamb sm" onclick="showBroadcast()">📢 Broadcast</button>
+      <button class="btn bh sm" onclick="doLogout()">Abmelden</button>
+    </div>
+
+    <!-- Crit Banner -->
+    <div id="crit-banner" style="display:none;background:rgba(220,38,38,.1);border-bottom:1px solid rgba(220,38,38,.2);padding:8px 24px;display:none;align-items:center;gap:10px">
+      <strong id="crit-count"></strong> <span style="color:var(--mut)">ungemeldete Vorfälle</span>
+      <button class="btn br sm" style="margin-left:auto" onclick="genReport()">Behördenbericht</button>
+    </div>
+
+    <div id="content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div id="sec-dashboard" class="section active fade-in">
+        <!-- Stat Cards -->
+        <div class="stat-grid" id="dash-stats">
+          <div class="stat-card" onclick="showSection('users')">
+            <div class="stat-icon" style="background:rgba(79,110,247,.12)">👥</div>
+            <div class="stat-num" id="d-total">—</div>
+            <div class="stat-label">Gesamt</div>
+            <div class="stat-sub" id="d-total-sub">+0% seit gestern</div>
+          </div>
+          <div class="stat-card" onclick="showSection('users')">
+            <div class="stat-icon" style="background:rgba(34,197,94,.12)">🟢</div>
+            <div class="stat-num" id="d-online">—</div>
+            <div class="stat-label">Online</div>
+            <div class="stat-sub" style="color:#22c55e">Live jetzt</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(251,191,36,.1)">✈️</div>
+            <div class="stat-num" id="d-away">—</div>
+            <div class="stat-label">Abwesend</div>
+            <div class="stat-sub" id="d-away-pct">0%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(139,92,246,.1)">📱</div>
+            <div class="stat-num" id="d-mobile">—</div>
+            <div class="stat-label">Mobile</div>
+            <div class="stat-sub" id="d-mob-pct">0%</div>
+          </div>
+          <div class="stat-card" onclick="showSection('security')">
+            <div class="stat-icon" style="background:rgba(220,38,38,.1)">🔒</div>
+            <div class="stat-num" id="d-banned">—</div>
+            <div class="stat-label">Gesperrt</div>
+            <div class="stat-sub" id="d-ban-pct">0%</div>
+          </div>
+          <div class="stat-card" onclick="showSection('users')">
+            <div class="stat-icon" style="background:rgba(234,88,12,.1)">🚩</div>
+            <div class="stat-num" id="d-warned">—</div>
+            <div class="stat-label">Verwarnungen</div>
+            <div class="stat-sub" id="d-warn-sub">+1 seit gestern</div>
+          </div>
+          <div class="stat-card" onclick="showSection('security')">
+            <div class="stat-icon" style="background:rgba(239,68,68,.08)">🛡️</div>
+            <div class="stat-num" id="d-crit">—</div>
+            <div class="stat-label">Ungem. Vorfälle</div>
+            <div class="stat-sub" id="d-crit-pct">0%</div>
+          </div>
+        </div>
+
+        <!-- Hauptbereich: Chart + Systemstatus + Schnellaktionen -->
+        <div style="display:grid;grid-template-columns:1fr 280px 240px;gap:16px;margin-bottom:20px">
+
+          <!-- Aktivitätsverlauf -->
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">📉 Aktivitätsverlauf</div>
+              <select id="chart-range" onchange="updateChart()" style="width:auto;padding:4px 8px;font-size:11px">
+                <option value="24">Letzte 24 Stunden</option>
+                <option value="7">Letzte 7 Tage</option>
+                <option value="30">Letzte 30 Tage</option>
+              </select>
+            </div>
+            <div style="padding:16px">
+              <!-- Legende -->
+              <div style="display:flex;gap:16px;margin-bottom:12px">
+                <span style="font-size:10px;color:#22c55e;display:flex;align-items:center;gap:4px"><span style="width:16px;height:2px;background:#22c55e;display:inline-block;border-radius:1px"></span>Online</span>
+                <span style="font-size:10px;color:var(--acc);display:flex;align-items:center;gap:4px"><span style="width:16px;height:2px;background:var(--acc);display:inline-block;border-radius:1px"></span>Neue Nutzer</span>
+                <span style="font-size:10px;color:var(--amb2);display:flex;align-items:center;gap:4px"><span style="width:16px;height:2px;background:var(--amb2);display:inline-block;border-radius:1px"></span>Nachrichten</span>
+              </div>
+              <!-- SVG Line Chart -->
+              <svg id="activity-chart" viewBox="0 0 600 180" style="width:100%;height:180px" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#22c55e" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+                  </linearGradient>
+                  <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#4f6ef7" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#4f6ef7" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- Grid lines -->
+                <line x1="0" y1="36" x2="600" y2="36" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+                <line x1="0" y1="72" x2="600" y2="72" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+                <line x1="0" y1="108" x2="600" y2="108" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+                <line x1="0" y1="144" x2="600" y2="144" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+                <!-- Y labels -->
+                <text x="4" y="38" fill="rgba(255,255,255,.2)" font-size="10" id="yl4"></text>
+                <text x="4" y="74" fill="rgba(255,255,255,.2)" font-size="10" id="yl3"></text>
+                <text x="4" y="110" fill="rgba(255,255,255,.2)" font-size="10" id="yl2"></text>
+                <text x="4" y="146" fill="rgba(255,255,255,.2)" font-size="10" id="yl1"></text>
+                <!-- Paths -->
+                <path id="chartPathGreenFill" fill="url(#gGreen)" opacity="0.6"/>
+                <path id="chartPathGreen" fill="none" stroke="#22c55e" stroke-width="2" stroke-linejoin="round"/>
+                <path id="chartPathBlueFill" fill="url(#gBlue)" opacity="0.5"/>
+                <path id="chartPathBlue" fill="none" stroke="#4f6ef7" stroke-width="2" stroke-linejoin="round"/>
+                <path id="chartPathAmber" fill="none" stroke="#e8b86d" stroke-width="1.5" stroke-dasharray="4,3" stroke-linejoin="round"/>
+                <!-- X labels -->
+                <g id="chart-xlabels"></g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Systemstatus -->
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">⚡ Systemstatus</div></div>
+            <div style="padding:12px 16px" id="sys-status-list">
+              <div class="activity-item" style="padding:8px 0">
+                <div class="status-dot dot-green"></div>
+                <span style="font-size:12px;flex:1">Datenbank</span>
+                <span style="font-size:11px;color:#22c55e">Online</span>
+              </div>
+              <div class="activity-item" style="padding:8px 0">
+                <div class="status-dot dot-green"></div>
+                <span style="font-size:12px;flex:1">Redis Server</span>
+                <span style="font-size:11px;color:#22c55e">Online</span>
+              </div>
+              <div class="activity-item" style="padding:8px 0">
+                <div class="status-dot dot-green"></div>
+                <span style="font-size:12px;flex:1">WebSocket</span>
+                <span style="font-size:11px;color:#22c55e">Online</span>
+              </div>
+              <div class="activity-item" style="padding:8px 0">
+                <div class="status-dot dot-green"></div>
+                <span style="font-size:12px;flex:1">Dateispeicher</span>
+                <span style="font-size:11px;color:#22c55e">Online</span>
+              </div>
+              <div class="activity-item" style="padding:8px 0">
+                <div class="status-dot dot-green"></div>
+                <span style="font-size:12px;flex:1">E-Mail Service</span>
+                <span style="font-size:11px;color:#22c55e">Online</span>
+              </div>
+              <div class="activity-item" style="padding:8px 0">
+                <div class="status-dot dot-green"></div>
+                <span style="font-size:12px;flex:1">API Server</span>
+                <span style="font-size:11px;color:#22c55e">Online</span>
+              </div>
+              <div class="activity-item" style="padding:8px 0;border-bottom:none">
+                <div class="status-dot dot-green"></div>
+                <span style="font-size:12px;flex:1">CDN</span>
+                <span style="font-size:11px;color:#22c55e">Online</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schnellaktionen + Systeminfo -->
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">⚡ Schnellaktionen</div></div>
+              <div style="padding:10px 12px">
+                <div class="quick-action" onclick="showBroadcast()">
+                  <div class="qa-icon" style="background:rgba(220,38,38,.12)">📢</div>
+                  <div><div style="font-size:12px;font-weight:600">Broadcast senden</div><div style="font-size:10px;color:var(--mut)">Nachricht an alle Nutzer</div></div>
+                </div>
+                <div class="quick-action" onclick="toggleMaintenance()">
+                  <div class="qa-icon" style="background:rgba(234,88,12,.12)">🔧</div>
+                  <div><div style="font-size:12px;font-weight:600">Wartungsmodus</div><div style="font-size:10px;color:var(--mut)">System in Wartung versetzen</div></div>
+                </div>
+                <div class="quick-action" onclick="doBackup()">
+                  <div class="qa-icon" style="background:rgba(22,163,74,.12)">💾</div>
+                  <div><div style="font-size:12px;font-weight:600">Datenbank Backup</div><div style="font-size:10px;color:var(--mut)">Manuelles Backup erstellen</div></div>
+                </div>
+                <div class="quick-action" onclick="showSection('logs')">
+                  <div class="qa-icon" style="background:rgba(79,110,247,.12)">📋</div>
+                  <div><div style="font-size:12px;font-weight:600">System Logs</div><div style="font-size:10px;color:var(--mut)">Logs in Echtzeit anzeigen</div></div>
+                </div>
+                <div class="quick-action" onclick="clearCache()">
+                  <div class="qa-icon" style="background:rgba(139,92,246,.12)">🗑️</div>
+                  <div><div style="font-size:12px;font-weight:600">Cache leeren</div><div style="font-size:10px;color:var(--mut)">System Cache vollständig leeren</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Systeminformationen -->
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">ℹ️ Systeminformationen</div></div>
+              <div style="padding:12px 16px">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px">
+                  <span style="color:var(--mut)">Version</span><span style="font-weight:600">v2.1.0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px">
+                  <span style="color:var(--mut)">Umgebung</span><span style="color:#86efac">Production</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:12px">
+                  <span style="color:var(--mut)">Server Uptime</span><span id="uptime-val" style="font-weight:600">—</span>
+                </div>
+                <div style="margin-bottom:10px">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                    <span style="color:var(--mut)">Speicherverwendung</span><span id="mem-pct">—</span>
+                  </div>
+                  <div class="progress"><div class="progress-bar" id="mem-bar" style="background:var(--acc);width:0%"></div></div>
+                </div>
+                <div style="margin-bottom:10px">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                    <span style="color:var(--mut)">CPU Verwendung</span><span id="cpu-pct">—</span>
+                  </div>
+                  <div class="progress"><div class="progress-bar" id="cpu-bar" style="background:#22c55e;width:0%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                    <span style="color:var(--mut)">Festplattenplatz</span><span id="disk-pct">—</span>
+                  </div>
+                  <div class="progress"><div class="progress-bar" id="disk-bar" style="background:#e8b86d;width:0%"></div></div>
+                </div>
+                <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:6px">
+                  <div class="status-dot dot-green"></div>
+                  <span style="font-size:11px;color:#86efac;font-weight:600">Alle Systeme optimal</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Untere Reihe: Aktivitäten + Top Channels -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <!-- Neueste Aktivitäten -->
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">🕐 Neueste Aktivitäten</div>
+              <button class="btn bh sm">Alle anzeigen</button>
+            </div>
+            <div id="activity-feed" style="padding:8px 16px">
+              <div class="empty">Lade Aktivitäten...</div>
+            </div>
+          </div>
+
+          <!-- Top aktive Channels -->
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">🔥 Top aktive Channels</div>
+              <button class="btn bh sm" onclick="showSection('devportal')">Alle Channels anzeigen</button>
+            </div>
+            <div style="overflow-x:auto">
+              <table>
+                <thead><tr><th>#</th><th>Channel</th><th>Mitglieder</th><th>Online</th><th>Nachrichten</th></tr></thead>
+                <tbody id="top-channels-body">
+                  <tr><td colspan="5" class="empty">Lade...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MONITORING ══ -->
+      <div id="sec-monitoring" class="section fade-in">
+        <div class="stat-grid">
+          <div class="stat-card bl" style="border-color:rgba(79,110,247,.2)"><div class="stat-icon" style="background:rgba(79,110,247,.12)">👥</div><div class="stat-num" id="s-tot">—</div><div class="stat-label">Gesamt</div></div>
+          <div class="stat-card" style="border-color:rgba(34,197,94,.2)"><div class="stat-icon" style="background:rgba(34,197,94,.12)">🟢</div><div class="stat-num" id="s-onl">—</div><div class="stat-label">Online</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(251,191,36,.1)">✈️</div><div class="stat-num" id="s-awa">—</div><div class="stat-label">Abwesend</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(139,92,246,.1)">📱</div><div class="stat-num" id="s-mob">—</div><div class="stat-label">Mobile</div></div>
+          <div class="stat-card" style="border-color:rgba(220,38,38,.2)"><div class="stat-icon" style="background:rgba(220,38,38,.1)">🔒</div><div class="stat-num" id="s-ban">—</div><div class="stat-label">Gesperrt</div></div>
+          <div class="stat-card" style="border-color:rgba(234,88,12,.2)"><div class="stat-icon" style="background:rgba(234,88,12,.1)">🚩</div><div class="stat-num" id="s-war">—</div><div class="stat-label">Verwarnungen</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-crit">—</div><div class="stat-label">Ungem. Vorfälle</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-orp">—</div><div class="stat-label">Offene Meldungen</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><span class="panel-title">⚡ Schnellaktionen</span></div>
+          <div style="padding:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn br" onclick="genReport()">📄 Behördenbericht</button>
+            <button class="btn bo" onclick="showBroadcast()">📢 Broadcast</button>
+            <button class="btn bh" onclick="exportJSON()">📥 Export JSON</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ NUTZER ══ -->
+      <div id="sec-users" class="section fade-in">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+          <input id="usrq" placeholder="UIN, Name, E-Mail suchen…" style="width:220px" oninput="debounceUsers()"/>
+          <select id="usrf" style="width:auto;padding:8px 12px" onchange="loadUsers(1)">
+            <option value="all">Alle</option>
+            <option value="online">🟢 Online</option>
+            <option value="away">🟡 Abwesend</option>
+            <option value="offline">⚫ Offline</option>
+            <option value="banned">🚫 Gesperrt</option>
+            <option value="warned">⚠️ Verwarnungen</option>
+          </select>
+          <div style="display:flex;gap:8px;font-size:12px;margin-left:auto;flex-wrap:wrap">
+            <span>👤 Gesamt: <strong id="ut-tot">?</strong></span>
+            <span style="color:#22c55e">🟢 Online: <strong id="ut-onl">?</strong></span>
+            <span style="color:#f59e0b">🟡 Abwesend: <strong id="ut-awa">?</strong></span>
+            <span style="color:#f87171">🚫 Gesperrt: <strong id="ut-ban">?</strong></span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><span class="panel-title">👥 Alle Nutzer</span></div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Status</th><th>UIN</th><th>Username</th><th>E-Mail</th><th>Gerät & IP</th><th>Registriert</th><th>Zuletzt</th><th>Meld.</th><th>Aktionen</th></tr></thead>
+              <tbody id="utbody"><tr><td colspan="9" class="empty">Lade…</td></tr></tbody>
+            </table>
+          </div>
+          <div id="upag" class="pag"></div>
+        </div>
+      </div>
+
+      <!-- ══ SICHERHEIT ══ -->
+      <div id="sec-security" class="section fade-in">
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">🔐 Security-Logs</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <select id="lf" style="width:auto;padding:6px 10px;font-size:12px" onchange="filterLogs()">
+                <option value="all">Alle</option>
+                <option value="csam">CSAM (§184b)</option>
+                <option value="extremism">Extremismus (§86a)</option>
+                <option value="terrorism">Terrorismus (§129a)</option>
+                <option value="flagged_review">Zur Prüfung</option>
+              </select>
+              <button class="btn br sm" onclick="genReport()">📄 Bericht</button>
+              <button class="btn bdel sm" onclick="deleteAllLogs()">🗑️ Alle löschen</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Zeit</th><th>Typ</th><th>Nutzer</th><th>IP & Gerät</th><th>Inhalt</th><th>Rechtsgrundlage</th><th>Status</th><th>Aktionen</th></tr></thead>
+              <tbody id="ltbody"><tr><td colspan="8" class="empty">Lade…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MELDUNGEN ══ -->
+      <div id="sec-reports" class="section fade-in">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-title">⚠️ Nutzer-Meldungen</span></div>
+          <div id="replist" style="padding:12px"><div class="empty">Lade…</div></div>
+        </div>
+      </div>
+
+      <!-- ══ STATISTIKEN ══ -->
+      <div id="sec-statistics" class="section fade-in">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">
+          <div class="stat-card"><div class="stat-num" id="rgt">—</div><div class="stat-label">Nutzer gesamt</div></div>
+          <div class="stat-card"><div class="stat-num" id="act-today">—</div><div class="stat-label">Heute aktiv</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-tot2">—</div><div class="stat-label">Nachrichten</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-grp">—</div><div class="stat-label">Gruppen</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <div class="panel">
+            <div class="panel-head"><span class="panel-title">📅 Registrierungen (letzte 14 Tage)</span></div>
+            <div style="padding:14px 16px 10px">
+              <div class="chart-bar" id="rgb"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-title">💬 Nachrichten-Aktivität</span></div>
+            <div style="padding:14px 16px 10px">
+              <div class="chart-bar" id="msg-chart"></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+          <div class="panel">
+            <div class="panel-head"><span class="panel-title">🏆 Top Nutzer</span></div>
+            <div style="padding:12px 16px" id="top-users"><div class="empty">Lade…</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-title">🏘️ Top Gruppen</span></div>
+            <div style="padding:12px 16px" id="top-groups"><div class="empty">Lade…</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-title">📊 Nachrichten-Typen</span></div>
+            <div style="padding:12px 16px" id="msg-types"><div class="empty">Lade…</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DEVELOPER PORTAL ══ -->
+      <div id="sec-devportal" class="section fade-in">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(79,110,247,.12)">👤</div><div class="stat-num" id="stat-devs">0</div><div class="stat-label">Entwickler</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,.12)">🤖</div><div class="stat-num" id="stat-bots">0</div><div class="stat-label">Bots Erstellt</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(234,88,12,.12)">📡</div><div class="stat-num" id="stat-api-calls">0</div><div class="stat-label">API Calls (30d)</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(220,38,38,.1)">💰</div><div class="stat-num" id="stat-revenue">€0</div><div class="stat-label">Revenue (Q4 2026)</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">👨‍💻 Alle Entwickler</span>
+            <div style="display:flex;gap:6px">
+              <input type="text" id="dev-search" placeholder="Suchen…" style="width:180px;font-size:12px" oninput="filterDevs()"/>
+              <button class="btn bg sm" onclick="loadDevStats()">🔄 Refresh</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Developer</th><th>Email</th><th>Bots</th><th>API Calls (30d)</th><th>Plan</th><th>Registriert</th><th>Aktionen</th></tr></thead>
+              <tbody id="devs-tbody"><tr><td colspan="7" class="empty">Lade Developer…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">🤖 Alle Bots</span>
+            <input type="text" id="bot-search" placeholder="Bot suchen…" style="width:180px;font-size:12px" oninput="filterBots()"/>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Bot Name</th><th>Bot ID</th><th>Owner</th><th>Status</th><th>Installationen</th><th>API Calls</th><th>Erstellt</th><th>Aktionen</th></tr></thead>
+              <tbody id="bots-tbody"><tr><td colspan="8" class="empty">Lade Bots…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DATENBANK ══ -->
+      <div id="sec-database" class="section fade-in">
+        <!-- DB Stats -->
+        <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(79,110,247,.12)">👥</div><div class="stat-num" id="db-users">—</div><div class="stat-label">Nutzer</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(34,197,94,.12)">💬</div><div class="stat-num" id="db-msgs">—</div><div class="stat-label">Nachrichten</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(139,92,246,.12)">👥</div><div class="stat-num" id="db-groups">—</div><div class="stat-label">Gruppen</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:rgba(232,184,109,.1)">📢</div><div class="stat-num" id="db-channels">—</div><div class="stat-label">Channels</div></div>
+        </div>
+
+        <!-- Wartungsmodus -->
+        <div class="panel" style="margin-bottom:16px">
+          <div class="panel-head">
+            <div class="panel-title">🔧 Wartungsmodus</div>
+            <div id="maint-status" style="display:flex;align-items:center;gap:8px">
+              <div class="status-dot" id="maint-dot" style="background:#ef4444"></div>
+              <span id="maint-label" style="font-size:12px;color:var(--mut)">Inaktiv</span>
+            </div>
+          </div>
+          <div style="padding:16px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <input id="maint-msg" placeholder="Wartungs-Nachricht für Nutzer..." style="flex:1;min-width:200px"/>
+            <button class="btn bo" id="maint-btn" onclick="toggleMaintenance()">🔧 Wartungsmodus aktivieren</button>
+          </div>
+        </div>
+
+        <!-- Backup -->
+        <div class="panel" style="margin-bottom:16px">
+          <div class="panel-head">
+            <div class="panel-title">💾 Backup & Restore</div>
+            <button class="btn bg sm" onclick="doBackup()">💾 Backup erstellen</button>
+          </div>
+          <div style="padding:16px 20px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <!-- Vorhandene Backups -->
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                  <div style="font-size:12px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.06em">Tägliche Backups (.tar.gz)</div>
+                  <button class="btn bh sm" onclick="loadBackupList()">🔄</button>
+                </div>
+                <div id="backup-list" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto">
+                  <div class="empty">Lade...</div>
+                </div>
+                <div style="margin-top:8px;font-size:10px;color:var(--mut)">Automatisches Backup täglich um 02:30 Uhr</div>
+              </div>
+              <!-- Restore -->
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--mut);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Backup wiederherstellen</div>
+                <div style="padding:14px;border:2px dashed rgba(255,255,255,.1);border-radius:10px;text-align:center;cursor:pointer" onclick="document.getElementById('backup-file').click()" id="drop-zone"
+                  ondragover="event.preventDefault();this.style.borderColor='#e8b86d'"
+                  ondragleave="this.style.borderColor='rgba(255,255,255,.1)'"
+                  ondrop="event.preventDefault();this.style.borderColor='rgba(255,255,255,.1)';handleRestoreFile(event.dataTransfer.files[0])">
+                  <div style="font-size:24px;margin-bottom:6px">📂</div>
+                  <div style="font-size:12px;color:var(--mut)">Backup-Datei hierher ziehen oder klicken</div>
+                  <input type="file" id="backup-file" accept=".json" style="display:none" onchange="handleRestoreFile(this.files[0])"/>
+                </div>
+                <div id="restore-status" style="margin-top:8px;font-size:12px;display:none"></div>
+                <button class="btn br fw" id="restore-btn" onclick="doRestore()" style="margin-top:8px;display:none">🔄 Wiederherstellen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ICQ Claims -->
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">📡 Legacy ICQ-UIN Claims</span>
+            <button class="btn bh sm" onclick="loadClaims()">🔄 Aktualisieren</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>UIN</th><th>Beansprucht von</th><th>Nachweis</th><th>Datum</th><th>Status</th><th>Aktionen</th></tr></thead>
+              <tbody id="claims-tbody"><tr><td colspan="6" class="empty">Lade…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MITARBEITER ══ -->
+      <div id="sec-staff" class="section fade-in">
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">👔 Mitarbeiter</span>
+            <button class="btn bg sm" onclick="showInviteModal()">+ Einladen</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Name</th><th>Rolle</th><th>Token</th><th>Erstellt</th><th>Aktionen</th></tr></thead>
+              <tbody id="staff-tbody"><tr><td colspan="5" class="empty">Lade…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ LOGS ══ -->
+      <div id="sec-logs" class="section fade-in">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-title">📋 System Logs</span></div>
+          <div style="padding:16px;font-family:monospace;font-size:11px;color:#4ade80;background:#030507;border-radius:0 0 14px 14px;min-height:300px;max-height:600px;overflow-y:auto" id="sys-logs">
+            <div style="color:var(--mut)">[System] Log-Viewer wird geladen...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ EINSTELLUNGEN ══ -->
+      <div id="sec-settings" class="section fade-in">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-title">⚙️ Einstellungen</span></div>
+          <div style="padding:20px;max-width:500px">
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--mut);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Admin Secret ändern</label>
+              <input type="password" id="new-secret" placeholder="Neues Secret…" style="margin-bottom:8px"/>
+              <button class="btn bp" onclick="changeSecret()">Speichern</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ MODALS ══ -->
+<div id="modal-broadcast" class="modal">
+  <div class="mb">
+    <div class="mt">📢 Broadcast senden<button onclick="closeModal('modal-broadcast')" style="background:none;border:none;color:var(--mut);cursor:pointer;font-size:18px">×</button></div>
+    <textarea id="bc-msg" placeholder="Nachricht an alle Nutzer…" style="margin-bottom:12px"></textarea>
+    <div style="display:flex;gap:8px">
+      <button class="btn bh fw" onclick="closeModal('modal-broadcast')">Abbrechen</button>
+      <button class="btn br fw" onclick="sendBroadcast()">📢 Senden</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-invite" class="modal">
+  <div class="mb">
+    <div class="mt">👔 Mitarbeiter einladen<button onclick="closeModal('modal-invite')" style="background:none;border:none;color:var(--mut);cursor:pointer;font-size:18px">×</button></div>
+    <select id="invite-role" style="margin-bottom:12px">
+      <option value="moderator">🛡️ Moderator</option>
+      <option value="support">🎧 Support</option>
+      <option value="analyst">📊 Analyst</option>
+    </select>
+    <button class="btn bg fw" onclick="createInvite()">Token generieren</button>
+    <div id="invite-result" style="margin-top:12px;display:none">
+      <div style="font-size:11px;color:var(--mut);margin-bottom:6px">Token (einmalig!):</div>
+      <div style="display:flex;gap:6px">
+        <input id="invite-token" readonly style="font-family:monospace;font-size:11px"/>
+        <button class="btn bh sm" onclick="copyToken()">📋</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-log" class="modal">
+  <div class="mb">
+    <div class="mt" id="modal-log-title">Log Detail<button onclick="closeModal('modal-log')" style="background:none;border:none;color:var(--mut);cursor:pointer;font-size:18px">×</button></div>
+    <div id="modal-log-body"></div>
+  </div>
+</div>
+
+<div id="modal-pw" class="modal">
+  <div class="mb" style="max-width:400px">
+    <div class="mt">🔑 Passwort zurücksetzen<button onclick="closeModal('modal-pw')" style="background:none;border:none;color:var(--mut);cursor:pointer;font-size:18px">×</button></div>
+    <p style="font-size:12px;color:var(--mut);margin-bottom:14px">Für: <strong id="pw-name"></strong></p>
+    <input type="password" id="pw-new" placeholder="Neues Passwort (min. 10 Zeichen)" style="margin-bottom:8px"/>
+    <input type="password" id="pw-confirm" placeholder="Bestätigen" style="margin-bottom:10px"/>
+    <p id="pw-err" style="color:#f87171;font-size:11px;margin-bottom:10px;display:none"></p>
+    <div style="display:flex;gap:8px">
+      <button class="btn bh fw" onclick="closeModal('modal-pw')">Abbrechen</button>
+      <button class="btn bp fw" onclick="savePw()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-user" class="modal">
+  <div class="mb">
+    <div class="mt" id="modal-user-title">Nutzer<button onclick="closeModal('modal-user')" style="background:none;border:none;color:var(--mut);cursor:pointer;font-size:18px">×</button></div>
+    <div id="modal-user-body"></div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+var S = {
+  secret: sessionStorage.getItem('pa') || '',
+  staffToken: sessionStorage.getItem('staffToken') || '',
+  role: sessionStorage.getItem('staffRole') || (sessionStorage.getItem('pa') ? 'superadmin' : ''),
+  permissions: [],
+  stats: null,
+  stTimer: null,
+  logs: [],
+  devsCache: [],
+  botsCache: []
+}
+
+// ── Helpers ──────────────────────────────────────────────────────
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') }
+function jsq(s){ return esc(String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r/g,'\\r').replace(/\n/g,'\\n')) }
+function safeHref(s){try{var u=new URL(String(s||''),location.origin);return u.protocol==='https:'||u.protocol==='http:'?esc(u.href):''}catch(_e){return ''}}
+function setText(id,v){ var el=document.getElementById(id); if(el) el.textContent=v }
+function fd(d){ if(!d) return '—'; var dt=new Date(d); return dt.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'})+' '+dt.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) }
+function ts(){ return new Date().toISOString().slice(0,10) }
+function toast(msg,ok){ var t=document.getElementById('toast'); t.textContent=msg; t.style.color=ok===false?'#f87171':'#86efac'; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show') },3000) }
+function dl(data,name){ var a=document.createElement('a'); a.href='data:application/json,'+encodeURIComponent(data); a.download=name; a.click() }
+function req(url,opts){ opts=opts||{}; var h=getHeaders(); if(opts.json){ h['Content-Type']='application/json' } return fetch(url,{ method:opts.method||'GET', headers:h, body:opts.json?JSON.stringify(opts.json):undefined }).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json().catch(function(){ return {} }) }) }
+function closeModal(id){ document.getElementById(id).classList.remove('open') }
+function openModal(id){ document.getElementById(id).classList.add('open') }
+function getHeaders(){ if(S.staffToken) return {'X-Staff-Token':S.staffToken}; return {'X-Admin-Secret':S.secret} }
+function hasPerm(p){ if(S.role==='superadmin') return true; return S.permissions && S.permissions.includes(p) }
+
+function setServerHealth(online){
+  var color=online?'#22c55e':'#ef4444'
+  var loginDot=document.getElementById('login-server-dot')
+  var loginText=document.getElementById('login-server-text')
+  var topDot=document.getElementById('top-server-dot')
+  if(loginDot) loginDot.style.background=color
+  if(loginText) loginText.textContent=online?'Server erreichbar':'Server nicht erreichbar'
+  if(topDot){topDot.classList.remove('dot-green','dot-yellow','dot-red');topDot.classList.add(online?'dot-green':'dot-red')}
+}
+function checkServerHealth(){
+  return fetch('/api/health',{cache:'no-store'}).then(function(r){setServerHealth(r.ok);return r.ok}).catch(function(){setServerHealth(false);return false})
+}
+
+// ── Section Navigation ───────────────────────────────────────────
+var sectionTitles = {
+  dashboard:'Dashboard', monitoring:'Monitoring', users:'Nutzer', security:'Sicherheit',
+  reports:'Meldungen', statistics:'Statistiken', devportal:'Developer Portal',
+  database:'Datenbank', staff:'Mitarbeiter', logs:'System Logs', settings:'Einstellungen'
+}
+var sectionSubs = {
+  dashboard:'Übersicht aller Systemaktivitäten in Echtzeit',
+  monitoring:'Echtzeit-Überwachung aller Systemparameter',
+  users:'Alle registrierten Nutzer verwalten',
+  security:'Security-Logs und Vorfälle',
+  reports:'Nutzer-Meldungen bearbeiten',
+  statistics:'Statistiken und Auswertungen',
+  devportal:'Developer Portal und Bot-Verwaltung',
+  database:'ICQ Claims und Datenbank',
+  staff:'Mitarbeiter und Berechtigungen',
+  logs:'System-Logs in Echtzeit',
+  settings:'Systemeinstellungen'
+}
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active') })
+  var sec = document.getElementById('sec-'+name)
+  if(sec) { sec.classList.add('active'); sec.classList.remove('fade-in'); void sec.offsetWidth; sec.classList.add('fade-in') }
+  document.querySelectorAll('.sb-item[data-section]').forEach(function(b){ b.classList.remove('active') })
+  var btn = document.querySelector('.sb-item[data-section="'+name+'"]')
+  if(btn) btn.classList.add('active')
+  setText('tb-title', sectionTitles[name]||name)
+  setText('tb-sub', sectionSubs[name]||'')
+  if(name==='statistics') loadStats2()
+  if(name==='devportal') loadDevStats()
+  if(name==='database') { loadClaims(); loadDbStats(); loadBackupList() }
+  if(name==='staff') loadStaff()
+  if(name==='logs') loadSysLogs()
+  if(name==='users') loadUsers(1)
+  if(name==='security') loadLogs()
+  if(name==='reports') loadReports()
+  var sidebar=document.getElementById('sidebar')
+  var mobileToggle=document.getElementById('mobile-nav-toggle')
+  if(window.innerWidth<=900&&sidebar){sidebar.classList.remove('open');if(mobileToggle)mobileToggle.setAttribute('aria-expanded','false')}
+}
+
+// ── Login ────────────────────────────────────────────────────────
+function setLoginType(type) {
+  var si=document.getElementById('si')
+  if(type==='staff'){si.placeholder='Staff-Token einfügen';si.style.letterSpacing='0'}
+  else{si.placeholder='Admin-Secret';si.style.letterSpacing='2px'}
+  window._loginType=type
+  document.getElementById('lt-secret').style.cssText='flex:1;padding:8px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-weight:'+(type==='secret'?'600;background:linear-gradient(135deg,#b46a0e,#e8b86d);color:#fff':'500;background:none;color:var(--mut)')
+  document.getElementById('lt-staff').style.cssText='flex:1;padding:8px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-weight:'+(type==='staff'?'600;background:linear-gradient(135deg,#b46a0e,#e8b86d);color:#fff':'500;background:none;color:var(--mut)')
+}
+window._loginType='secret'
+
+function doLogin() {
+  var s=document.getElementById('si').value.trim()
+  var st=document.getElementById('ls-status')
+  if(!s){st.textContent='Eingabe fehlt';return}
+  st.textContent='Prüfe…'
+  if(window._loginType==='staff'){
+    fetch('/api/admin/my-role',{headers:{'X-Staff-Token':s}}).then(function(r){if(!r.ok)throw new Error(r.status===401||r.status===403?'Ungültiger Token':'HTTP '+r.status);return r.json()}).then(function(d){
+      if(d.role){S.staffToken=s;S.role=d.role;S.permissions=d.permissions||[];sessionStorage.setItem('staffToken',s);sessionStorage.setItem('staffRole',d.role);start()}
+      else st.textContent='❌ Ungültiger Token'
+    }).catch(function(e){st.textContent='Fehler: '+e.message})
+  } else {
+    fetch('/api/admin/stats',{headers:{'X-Admin-Secret':s}}).then(function(r){
+      if(!r.ok) throw new Error(r.status===401||r.status===403?'Falsches Secret':'HTTP '+r.status)
+      S.secret=s;S.role='superadmin';S.permissions=['*'];sessionStorage.setItem('pa',s);sessionStorage.removeItem('staffToken');sessionStorage.removeItem('staffRole');start()
+    }).catch(function(e){st.textContent='❌ '+e.message})
+  }
+}
+
+document.getElementById('si').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()})
+document.getElementById('lb-btn').onclick=doLogin
+
+function doLogout() {
+  S.secret='';S.staffToken='';S.role='';S.permissions=[]
+  sessionStorage.removeItem('pa');sessionStorage.removeItem('staffToken');sessionStorage.removeItem('staffRole')
+  if(S.stTimer) clearInterval(S.stTimer)
+  document.getElementById('ls').style.display='flex'
+  document.getElementById('app').style.display='none'
+}
+
+function start() {
+  document.getElementById('ls').style.display='none'
+  var app=document.getElementById('app'); app.style.display='flex'
+  applyRole()
+  loadAll()
+  if(S.stTimer) clearInterval(S.stTimer)
+  S.stTimer=setInterval(loadStats,20000)
+  setInterval(function(){setText('htime',new Date().toLocaleString('de-DE'))},1000)
+  setText('htime',new Date().toLocaleString('de-DE'))
+  // Simuliere System-Info
+  setTimeout(updateSysInfo,1000)
+  setInterval(updateSysInfo,30000)
+  startLiveActivity()
+}
+
+function applyRole() {
+  var rn={superadmin:'👑 Superadmin',moderator:'🛡️ Moderator',support:'🎧 Support',analyst:'📊 Analyst'}
+  var ra={superadmin:'#e8b86d',moderator:'#a78bfa',support:'#60a5fa',analyst:'#4ade80'}
+  var sbName=document.getElementById('sb-name')
+  if(sbName) sbName.textContent=rn[S.role]||S.role
+  var sbAv=document.getElementById('sb-av')
+  if(sbAv){sbAv.textContent=(rn[S.role]||'A')[0];sbAv.style.background='linear-gradient(135deg,#b46a0e,#e8b86d)'}
+  if(S.role==='superadmin'){
+    var db=document.getElementById('sb-db'); if(db) db.style.display=''
+    var sf=document.getElementById('sb-staff'); if(sf) sf.style.display=''
+  }
+}
+
+// ── Stats ────────────────────────────────────────────────────────
+function loadStats() {
+  return req('/api/admin/stats').then(function(d) {
+    if(!d||!d.users) return
+    S.stats=d
+    var u=d.users||{}, sec=d.security||{}, rep=d.reports||{}
+    var tot=u.total||0
+    // Dashboard
+    setText('d-total',tot); setText('d-online',u.online||0); setText('d-away',u.away||0)
+    setText('d-mobile',u.mobile||0); setText('d-banned',u.banned||0); setText('d-warned',u.warned||0)
+    setText('d-crit',sec.unreportedCritical||0)
+    if(tot>0){
+      setText('d-away-pct',Math.round((u.away||0)/tot*100)+'%')
+      setText('d-mob-pct',Math.round((u.mobile||0)/tot*100)+'%')
+      setText('d-ban-pct',Math.round((u.banned||0)/tot*100)+'%')
+    }
+    // Monitoring
+    setText('s-tot',tot);setText('s-onl',u.online||0);setText('s-awa',u.away||0)
+    setText('s-mob',u.mobile||0);setText('s-ban',u.banned||0);setText('s-war',u.warned||0)
+    setText('s-crit',sec.unreportedCritical||0);setText('s-orp',rep.open||0)
+    // Users tab
+    setText('ut-tot',tot);setText('ut-onl',u.online||0);setText('ut-awa',u.away||0);setText('ut-ban',u.banned||0)
+    // Topbar
+    setText('hol',(u.online||0)+' online')
+    // Crit banner
+    var crit=sec.unreportedCritical||0
+    var banner=document.getElementById('crit-banner')
+    if(banner){banner.style.display=crit>0?'flex':'none'; if(crit>0)setText('crit-count',crit)}
+    // Activity Feed
+    loadActivityFeed()
+    // Chart
+    drawMockChart(u)
+  }).catch(function(e){console.error('Stats:',e)})
+}
+
+function updateSysInfo() {
+  // Server-Infos aus /api/admin/stats
+  req('/api/admin/stats').then(function(d){
+    if(d && d.server){
+      var srv=d.server
+      if(srv.uptime){
+        var s=Math.floor(srv.uptime), d=Math.floor(s/86400), h=Math.floor((s%86400)/3600), m=Math.floor((s%3600)/60)
+        setText('uptime-val',d+'d '+h+'h '+m+'m')
+      }
+      if(srv.memory){var pct=Math.round(srv.memory.usedPercent||0);setText('mem-pct',pct+'%');var bar=document.getElementById('mem-bar');if(bar)bar.style.width=pct+'%'}
+      if(srv.cpu){var cp=Math.round(srv.cpu.usage||0);setText('cpu-pct',cp+'%');var cb=document.getElementById('cpu-bar');if(cb)cb.style.width=cp+'%'}
+      if(srv.disk){var dp=Math.round(srv.disk.usedPercent||0);setText('disk-pct',dp+'%');var db=document.getElementById('disk-bar');if(db)db.style.width=dp+'%'}
+    } else {
+      // Fallback Mock
+      setText('uptime-val','—'); setText('mem-pct','—'); setText('cpu-pct','—'); setText('disk-pct','—')
+    }
+  }).catch(function(){})
+}
+
+// ── Activity Feed ────────────────────────────────────────────────
+function loadActivityFeed() {
+  req('/api/admin/activity').then(function(d){
+    var feed=document.getElementById('activity-feed')
+    if(!feed) return
+    var items=d.activities||d||[]
+    if(!items.length){feed.innerHTML='<div class="empty">Keine Aktivitäten</div>';return}
+    feed.innerHTML=items.slice(0,6).map(function(a){
+      var icons={register:'👤',message:'💬',login:'🔑',warn:'⚠️',ban:'🚫',broadcast:'📢'}
+      var colors={register:'rgba(22,163,74,.15)',message:'rgba(79,110,247,.15)',login:'rgba(34,197,94,.15)',warn:'rgba(234,88,12,.15)',ban:'rgba(220,38,38,.15)',broadcast:'rgba(220,38,38,.12)'}
+      var ic=icons[a.type]||'📋', col=colors[a.type]||'rgba(255,255,255,.06)'
+      var ago=a.createdAt?timeSince(a.createdAt):''
+      return '<div class="activity-item"><div class="activity-icon" style="background:'+col+'">'+ic+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600">'+esc(a.title||a.type)+'</div><div style="font-size:11px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(a.description||a.detail||'')+'</div></div><span style="font-size:10px;color:var(--mut);flex-shrink:0">'+ago+'</span></div>'
+    }).join('')
+  }).catch(function(){
+    // Mock data
+    var feed=document.getElementById('activity-feed')
+    if(!feed) return
+    var mocks=[
+      {ic:'👤',col:'rgba(22,163,74,.15)',title:'Neuer Benutzer registriert',sub:'Sarah hat sich registriert',ago:'vor 2 Minuten'},
+      {ic:'💬',col:'rgba(79,110,247,.15)',title:'Nachricht gesendet',sub:'Test User hat eine Nachricht gesendet',ago:'vor 5 Minuten'},
+      {ic:'🔑',col:'rgba(34,197,94,.15)',title:'Benutzer angemeldet',sub:'Blacky hat sich angemeldet',ago:'vor 8 Minuten'},
+      {ic:'⚠️',col:'rgba(234,88,12,.15)',title:'Verwarnung erteilt',sub:'Lucifer_91 wurde verwarnt',ago:'vor 15 Minuten'},
+      {ic:'📢',col:'rgba(220,38,38,.12)',title:'Broadcast gesendet',sub:'System-Broadcast an alle Nutzer',ago:'vor 30 Minuten'},
+    ]
+    feed.innerHTML=mocks.map(function(m){
+      return '<div class="activity-item"><div class="activity-icon" style="background:'+m.col+'">'+m.ic+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600">'+m.title+'</div><div style="font-size:11px;color:var(--mut)">'+m.sub+'</div></div><span style="font-size:10px;color:var(--mut)">'+m.ago+'</span></div>'
+    }).join('')
+  })
+  // Load top channels
+  req('/api/admin/stats').then(function(d){
+    var tbody=document.getElementById('top-channels-body')
+    if(!tbody) return
+    var channels=(d.topChannels||[])
+    if(!channels.length){
+      tbody.innerHTML='<tr><td colspan="5" class="empty">Keine Channel-Daten</td></tr>'; return
+    }
+    tbody.innerHTML=channels.slice(0,5).map(function(ch,i){
+      return '<tr><td style="font-weight:700;color:var(--mut)">'+(i+1)+'</td><td style="font-weight:600">'+esc(ch.name||ch.groupName||'?')+'</td><td>'+esc(String(ch.members||ch.subscriberCount||0))+'</td><td style="color:#22c55e">'+esc(String(ch.online||0))+'</td><td>'+esc(String(ch.messages||0))+'</td></tr>'
+    }).join('')
+  }).catch(function(){})
+}
+
+function timeSince(d){
+  var s=Math.floor((Date.now()-new Date(d).getTime())/1000)
+  if(s<60) return 'gerade'
+  if(s<3600) return 'vor '+Math.floor(s/60)+' Min'
+  if(s<86400) return 'vor '+Math.floor(s/3600)+' Std'
+  return 'vor '+Math.floor(s/86400)+' Tagen'
+}
+
+// ── Chart ────────────────────────────────────────────────────────
+function drawMockChart(u) {
+  var pts=12, w=600, h=180, pad=20
+  var onlineData=[], newData=[], msgData=[]
+  var peak=Math.max(u.total||1, 10)
+  for(var i=0;i<pts;i++){
+    onlineData.push(Math.max(1,Math.round((u.online||1)*(.5+Math.random()*.8))))
+    newData.push(Math.floor(Math.random()*5))
+    msgData.push(Math.floor(Math.random()*peak*.3))
+  }
+  function buildPath(data,fill){
+    var mx=Math.max.apply(null,data)||1
+    var coords=data.map(function(v,i){
+      var x=pad+(i/(pts-1))*(w-pad*2), y=pad+(1-v/mx)*(h-pad*2)
+      return [x,y]
+    })
+    var d='M'+coords.map(function(c){return c[0]+','+c[1]}).join(' L')
+    if(fill){d+=' L'+coords[coords.length-1][0]+','+(h-pad)+' L'+coords[0][0]+','+(h-pad)+' Z'}
+    return d
+  }
+  document.getElementById('chartPathGreen').setAttribute('d',buildPath(onlineData))
+  document.getElementById('chartPathGreenFill').setAttribute('d',buildPath(onlineData,true))
+  document.getElementById('chartPathBlue').setAttribute('d',buildPath(newData))
+  document.getElementById('chartPathBlueFill').setAttribute('d',buildPath(newData,true))
+  document.getElementById('chartPathAmber').setAttribute('d',buildPath(msgData))
+  // X Labels
+  var lbls=document.getElementById('chart-xlabels')
+  lbls.innerHTML=''
+  for(var j=0;j<pts;j+=2){
+    var hh=(j*2)%24
+    var txt=document.createElementNS('http://www.w3.org/2000/svg','text')
+    txt.setAttribute('x',String(pad+(j/(pts-1))*(w-pad*2)))
+    txt.setAttribute('y',String(h-2))
+    txt.setAttribute('fill','rgba(255,255,255,.2)')
+    txt.setAttribute('font-size','9')
+    txt.setAttribute('text-anchor','middle')
+    txt.textContent=(hh<10?'0':'')+hh+':00'
+    lbls.appendChild(txt)
+  }
+  var mx2=Math.max.apply(null,onlineData)||1
+  setText('yl4',String(Math.round(mx2)))
+  setText('yl3',String(Math.round(mx2*.75)))
+  setText('yl2',String(Math.round(mx2*.5)))
+  setText('yl1',String(Math.round(mx2*.25)))
+}
+
+function updateChart(){drawMockChart((S.stats&&S.stats.users)||{})}
+
+// ── Users ────────────────────────────────────────────────────────
+var uTimer=null
+function debounceUsers(){clearTimeout(uTimer);uTimer=setTimeout(function(){loadUsers(1)},400)}
+
+function loadUsers(page) {
+  page=page||1
+  var q=(document.getElementById('usrq')||{}).value||''
+  var f=(document.getElementById('usrf')||{}).value||'all'
+  var url='/api/admin/users?page='+page+'&limit=25'+(q?'&q='+encodeURIComponent(q):'')
+  req(url).then(function(d){
+    var users=(d.users||[]).filter(function(u){
+      if(f==='online') return u.status==='online'
+      if(f==='away')   return u.status==='away'
+      if(f==='offline')return u.status==='offline'
+      if(f==='banned') return !!u.isBanned
+      if(f==='warned') return (u.warningCount||0)>0
+      return true
+    })
+    var tbody=document.getElementById('utbody')
+    if(!users.length){tbody.innerHTML='<tr><td colspan="9" class="empty">Keine Nutzer</td></tr>';document.getElementById('upag').innerHTML='';return}
+    tbody.innerHTML=users.map(function(u){
+      var mob=!!u.isMobile
+      var parts=(u.lastDevice||'').split('|').map(function(x){return x.trim()})
+      var isDeleted=u.username&&u.username.indexOf('deleted_')===0
+      return '<tr style="'+(isDeleted?'opacity:.4':'')+'">'+
+        '<td><span class="bdg '+(u.status==='online'?'brg':u.status==='away'?'bry':'brm')+'">'+esc(u.status==='online'?'Online':u.status==='away'?'Away':'Offline')+'</span>'+(u.isBanned?'<br><span class="bdg brd" style="margin-top:2px">🚫</span>':'')+'</td>'+
+        '<td style="font-family:monospace;font-size:10px">#'+esc(u.uin)+'</td>'+
+        '<td style="font-weight:600">'+esc(u.username)+'</td>'+
+        '<td style="color:var(--mut)">'+esc(u.email)+'</td>'+
+        '<td><div>'+(mob?'📱 ':'')+esc(parts[1]||parts[0]||'?')+'</div><div style="font-family:monospace;font-size:9px;color:var(--mut)">'+esc(u.lastIP||'?')+'</div></td>'+
+        '<td style="color:var(--mut)">'+fd(u.createdAt)+'</td>'+
+        '<td style="color:var(--mut)">'+fd(u.lastSeen)+'</td>'+
+        '<td><span class="bdg '+((u.reportCount||0)>=5?'brd':'brm')+'">'+(u.reportCount||0)+'</span>'+((u.warningCount||0)>0?'<br><span class="bdg bro">'+u.warningCount+' W</span>':'')+'</td>'+
+        '<td><div class="ra">'+
+          '<button class="btn bh sm" onclick="openMsgs(\''+u._id+'\',\''+jsq(u.username)+'\')">💬</button>'+
+          '<button class="btn bh sm" onclick="openPw(\''+u._id+'\',\''+jsq(u.username)+'\')">🔑</button>'+
+          (u.isBanned?'<button class="btn bg sm" onclick="unban(\''+u._id+'\',\''+jsq(u.username)+'\')">✓ Entsperren</button>':'<button class="btn br sm" onclick="ban(\''+u._id+'\',\''+jsq(u.username)+'\')">🚫</button>')+
+          '<button class="btn bdel sm" onclick="deleteUser(\''+u._id+'\',\''+jsq(u.username)+'\')">🗑️</button>'+
+        '</div></td></tr>'
+    }).join('')
+    var pages=d.pages||1
+    var pag=document.getElementById('upag')
+    if(pages<=1){pag.innerHTML='<span style="font-size:11px;color:var(--mut)">'+d.total+' Nutzer</span>';return}
+    var h=''
+    if(page>1) h+='<button class="btn bh sm" onclick="loadUsers('+(page-1)+')">← Vorher</button>'
+    h+='<span style="font-size:11px;color:var(--mut)">Seite '+page+'/'+pages+' ('+d.total+')</span>'
+    if(page<pages) h+='<button class="btn bh sm" onclick="loadUsers('+(page+1)+')">Weiter →</button>'
+    pag.innerHTML=h
+  }).catch(function(e){console.error('Users:',e)})
+}
+
+// ── Security Logs ────────────────────────────────────────────────
+function loadLogs() {
+  req('/api/admin/security-logs').then(function(d){S.logs=d.logs||[];renderLogs(S.logs)}).catch(function(){})
+}
+function filterLogs(){var f=document.getElementById('lf').value;renderLogs(f==='all'?S.logs:S.logs.filter(function(l){return l.eventType===f||(f==='flagged_review'&&l.status==='pending')}))}
+function renderLogs(logs){
+  var tbody=document.getElementById('ltbody')
+  if(!logs.length){tbody.innerHTML='<tr><td colspan="8" class="empty">Keine Einträge</td></tr>';return}
+  tbody.innerHTML=logs.map(function(l){
+    var rep=!!l.reportedToBka
+    return '<tr>'+
+      '<td style="font-size:9px;white-space:nowrap">'+new Date(l.timestamp).toLocaleString('de-DE')+'</td>'+
+      '<td><span class="bdg brd">'+esc(l.eventType||'?')+'</span></td>'+
+      '<td><b>'+esc(l.username||'?')+'</b><br><span style="font-family:monospace;font-size:9px;color:var(--mut)">#'+esc(l.userUIN||'?')+'</span></td>'+
+      '<td><span style="font-family:monospace;font-size:9px">'+esc(l.ipAddress||'?')+'</span></td>'+
+      '<td><div style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--mut)">'+esc(l.attemptedContent||'?')+'</div></td>'+
+      '<td style="font-size:10px;color:var(--mut)">'+esc(l.legalBasis||'?')+'</td>'+
+      '<td>'+(rep?'<span class="bdg brg">✓ Gemeldet</span>':'<span class="bdg brd">Offen</span>')+'</td>'+
+      '<td><div class="ra">'+
+        '<button class="btn bh sm" onclick="showLogDetail(\''+l._id+'\')">🔍</button>'+
+        '<button class="btn br sm" onclick="srep(\''+l._id+'\')">📄</button>'+
+        (!rep?'<button class="btn bg sm" onclick="mrep(\''+l._id+'\')">✓</button>':'')+
+        '<button class="btn bdel sm" onclick="delLog(\''+l._id+'\')">🗑️</button>'+
+      '</div></td></tr>'
+  }).join('')
+}
+function showLogDetail(id){
+  var l=S.logs.find(function(x){return x._id===id})
+  if(!l) return
+  document.getElementById('modal-log-title').firstChild.textContent='Log Detail: '+l.eventType
+  document.getElementById('modal-log-body').innerHTML='<table style="width:100%">'+
+    ['Zeit:'+new Date(l.timestamp).toLocaleString('de-DE'),'Typ:'+l.eventType,'Nutzer:'+(l.username||'?'),'UIN:#'+(l.userUIN||'?'),'E-Mail:'+(l.userEmail||'?'),'IP:'+(l.ipAddress||'?'),'Gerät:'+(l.deviceOS||'?'),'Inhalt:'+(l.attemptedContent||'—'),'Basis:'+(l.legalBasis||'?'),'Status:'+((l.reportedToBka)?'Gemeldet':'Offen')].map(function(r){var p=r.indexOf(':');return '<tr><td style="font-size:11px;color:var(--mut);padding:5px 8px;white-space:nowrap">'+r.slice(0,p)+'</td><td style="font-size:12px;padding:5px 8px;word-break:break-all">'+esc(r.slice(p+1))+'</td></tr>'}).join('')+
+    '</table>'
+  openModal('modal-log')
+}
+
+// ── Reports ──────────────────────────────────────────────────────
+function loadReports(){
+  req('/api/admin/reports').then(function(d){
+    var el=document.getElementById('replist')
+    if(!Array.isArray(d)||!d.length){el.innerHTML='<div class="empty">✅ Keine offenen Meldungen</div>';return}
+    el.innerHTML=d.map(function(r){
+      var ru=r.reportedUser||{},rr=r.reporter||{},rm=r.reportedMessage||{}
+      return '<div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:8px">'+
+        '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span><span class="bdg brd">'+esc(r.reason||'?')+'</span> <b>'+esc(ru.username||'?')+'</b> <span style="font-size:9px;color:var(--mut)">#'+esc(ru.uin||'?')+'</span></span><span style="font-size:10px;color:var(--mut)">'+fd(r.createdAt)+'</span></div>'+
+        (rm.content?'<div style="background:var(--bg);padding:6px 9px;border-radius:7px;font-size:11px;font-family:monospace;color:var(--mut);margin-bottom:8px">'+esc(rm.content)+'</div>':'')+
+        '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:var(--mut)">Von: '+esc(rr.username||'?')+'</span><div style="margin-left:auto;display:flex;gap:4px">'+
+        (ru._id&&!ru.isBanned?'<button class="btn br sm" onclick="ban(\''+ru._id+'\',\''+jsq(ru.username||'')+'\')">🚫 Sperren</button>':'')+
+        '<button class="btn bh sm" onclick="dismiss(\''+r._id+'\')">✓ Erledigt</button></div></div></div>'
+    }).join('')
+  }).catch(function(){})
+}
+
+// ── Statistics ───────────────────────────────────────────────────
+function loadStats2(){
+  req('/api/admin/charts').then(function(d){
+    if(d.totals){setText('rgt',d.totals.totalUsers||0);setText('act-today',d.totals.activeToday||0);setText('s-tot2',d.totals.totalMessages||0);setText('s-grp',d.totals.totalGroups||0)}
+    if(d.registrations&&d.registrations.length){var mx=Math.max.apply(null,d.registrations.map(function(e){return e.count}))||1;document.getElementById('rgb').innerHTML=d.registrations.map(function(e){var h=Math.max(4,Math.round(e.count/mx*64));var day=new Date(e._id+'T00:00:00').toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'});return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:2px" title="'+day+': '+e.count+'"><div style="font-size:7px;color:var(--mut)">'+e.count+'</div><div style="background:var(--acc);border-radius:2px 2px 0 0;height:'+h+'px;width:100%"></div><div style="font-size:7px;color:var(--mut)">'+day+'</div></div>'}).join('')}
+    if(d.messages&&d.messages.length){var mx2=Math.max.apply(null,d.messages.map(function(e){return e.count}))||1;var md=document.getElementById('msg-chart');if(md)md.innerHTML=d.messages.map(function(e){var h=Math.max(4,Math.round(e.count/mx2*64));var day=new Date(e._id+'T00:00:00').toLocaleDateString('de-DE',{weekday:'short'});return '<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:2px" title="'+day+': '+e.count+'"><div style="font-size:7px;color:var(--mut)">'+e.count+'</div><div style="background:#10b981;border-radius:2px 2px 0 0;height:'+h+'px;width:100%"></div><div style="font-size:7px;color:var(--mut)">'+day+'</div></div>'}).join('')}
+    var tu=document.getElementById('top-users');if(tu&&d.topUsers)tu.innerHTML=d.topUsers.length?d.topUsers.map(function(u,i){return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdr)"><span>'+['🥇','🥈','🥉','4.','5.'][i]+'</span><div style="flex:1"><div style="font-size:12px;font-weight:600">'+esc(u.username)+'</div><div style="font-size:10px;color:var(--mut)">#'+esc(u.uin)+'</div></div><span class="bdg brb">'+u.count+' Msg</span></div>'}).join(''):'<div class="empty">Keine Daten</div>'
+    var tg=document.getElementById('top-groups');if(tg&&d.topGroups)tg.innerHTML=d.topGroups.length?d.topGroups.map(function(g,i){return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdr)"><span>'+['🥇','🥈','🥉','4.','5.'][i]+'</span><div style="flex:1"><div style="font-size:12px;font-weight:600">'+esc(g.name||g.groupName||'?')+'</div></div><span class="bdg brg">'+(g.members||g.participantCount||0)+' Mitglieder</span></div>'}).join(''):'<div class="empty">Keine Daten</div>'
+    var mt=document.getElementById('msg-types');if(mt&&d.messageTypes){var tot=d.messageTypes.reduce(function(s,t){return s+t.count},0)||1;mt.innerHTML=d.messageTypes.slice(0,5).map(function(t){var pct=Math.round(t.count/tot*100);var icon={text:'💬',file:'📎',voice:'🎤',image:'🖼️'}[t._id]||'📄';return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>'+icon+' '+esc(t._id||'text')+'</span><span>'+pct+'%</span></div><div class="progress"><div class="progress-bar" style="background:var(--acc);width:'+pct+'%"></div></div></div>'}).join('')}
+  }).catch(function(e){console.error('Stats2:',e)})
+}
+
+// ── Developer Portal ─────────────────────────────────────────────
+function loadDevStats() {
+  req('/api/admin/developers').then(function(d) {
+    S.devsCache=d.developers||d||[]
+    setText('stat-devs',S.devsCache.length)
+    var totalBots=S.devsCache.reduce(function(s,d){return s+(d.bots||0)},0)
+    setText('stat-bots',totalBots)
+    renderDevs(S.devsCache)
+  }).catch(function(){setText('stat-devs','—')})
+
+  req('/api/admin/all-bots').then(function(d){
+    S.botsCache=d.bots||d||[]
+    setText('stat-bots',S.botsCache.length)
+    renderBots(S.botsCache)
+  }).catch(function(){setText('stat-bots','—')})
+}
+
+function renderDevs(devs){
+  var tbody=document.getElementById('devs-tbody')
+  if(!devs.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Keine Entwickler</td></tr>';return}
+  tbody.innerHTML=devs.map(function(d){
+    return '<tr>'+
+      '<td style="font-weight:600">'+esc(d.username||'?')+'<br><span style="font-size:9px;color:var(--mut)">#'+esc(d.uin||d._id||'?')+'</span></td>'+
+      '<td style="color:var(--mut)">'+esc(d.email||'?')+'</td>'+
+      '<td><span class="bdg brb">'+(d.bots||d.botCount||0)+' Bots</span></td>'+
+      '<td>'+(d.apiCalls||0).toLocaleString()+'</td>'+
+      '<td><span class="bdg '+(d.devPlan==='pro'?'brg':d.devPlan==='enterprise'?'bry':'brm')+'">'+esc(d.devPlan||'free')+'</span></td>'+
+      '<td style="color:var(--mut)">'+fd(d.devCreatedAt||d.createdAt)+'</td>'+
+      '<td><div class="ra">'+
+        '<button class="btn bh sm" onclick="showDevDetail(\''+d._id+'\')">👤</button>'+
+        '<button class="btn br sm" onclick="banDev(\''+d._id+'\',\''+jsq(d.username||'')+'\')">🚫</button>'+
+      '</div></td></tr>'
+  }).join('')
+}
+
+function renderBots(bots){
+  var tbody=document.getElementById('bots-tbody')
+  if(!bots.length){tbody.innerHTML='<tr><td colspan="8" class="empty">Keine Bots</td></tr>';return}
+  tbody.innerHTML=bots.map(function(b){
+    var online=b.status==='active'||b.status==='online'||b.isOnline
+    var pending=b.reviewStatus==='pending'
+    return '<tr>'+
+      '<td style="font-weight:600">🤖 '+esc(b.name||b.username||'?')+'</td>'+
+      '<td style="font-family:monospace;font-size:9px;color:var(--mut)">'+esc(b.botId||b._id||'?')+'</td>'+
+      '<td>'+esc(b.ownerUsername||b.owner||'?')+'</td>'+
+      '<td><span class="bdg '+(online?'brg':'brm')+'">'+(online?'🟢 Online':'⚫ Offline')+'</span></td>'+
+      '<td>'+(b.installations||b.servers||0)+'</td>'+
+      '<td>'+(b.apiCalls||0).toLocaleString()+'</td>'+
+      '<td style="color:var(--mut)">'+fd(b.createdAt)+'</td>'+
+      '<td><div class="ra">'+
+        (pending?'<button class="btn bg sm" onclick="approveBot(\''+jsq(b.botId)+'\')">✓ Freigeben</button><button class="btn br sm" onclick="rejectBot(\''+jsq(b.botId)+'\')">✕ Ablehnen</button>':'')+
+        '<button class="btn br sm" onclick="banBot(\''+jsq(b.botId||b._id)+'\',\''+jsq(b.name||'')+'\')">🚫</button>'+
+      '</div></td></tr>'
+  }).join('')
+}
+
+function approveBot(botId){
+  if(!confirm('Bot für den Marktplatz freigeben?')) return
+  req('/api/admin/bots/'+encodeURIComponent(botId)+'/approve',{method:'POST',body:'{}'}).then(function(){toast('Bot freigegeben','ok');loadDevStats()}).catch(function(e){toast(e.message||'Fehler','err')})
+}
+function rejectBot(botId){
+  var reason=prompt('Grund für die Ablehnung:')
+  if(reason===null) return
+  req('/api/admin/bots/'+encodeURIComponent(botId)+'/reject',{method:'POST',body:JSON.stringify({reason:reason})}).then(function(){toast('Bot abgelehnt','ok');loadDevStats()}).catch(function(e){toast(e.message||'Fehler','err')})
+}
+
+function filterDevs(){var q=document.getElementById('dev-search').value.toLowerCase();renderDevs(S.devsCache.filter(function(d){return (d.username||'').toLowerCase().includes(q)||(d.email||'').toLowerCase().includes(q)}))}
+function filterBots(){var q=document.getElementById('bot-search').value.toLowerCase();renderBots(S.botsCache.filter(function(b){return (b.name||b.username||'').toLowerCase().includes(q)||(b.botId||'').toLowerCase().includes(q)}))}
+
+function showDevDetail(id){
+  var dev=S.devsCache.find(function(d){return d._id===id})
+  if(!dev) return
+  document.getElementById('modal-user-title').firstChild.textContent='Developer: '+dev.username
+  document.getElementById('modal-user-body').innerHTML='<table style="width:100%">'+
+    [['Username',dev.username],['UIN','#'+(dev.uin||'?')],['E-Mail',dev.email],['Plan',dev.devPlan||'free'],['API Key',dev.devApiKey?dev.devApiKey.slice(0,20)+'…':'—'],['Bots',String(dev.bots||dev.botCount||0)],['API Calls (30d)',String(dev.apiCalls||0)],['Registriert',fd(dev.devCreatedAt||dev.createdAt)]].map(function(r){return '<tr><td style="font-size:11px;color:var(--mut);padding:5px 8px;white-space:nowrap">'+r[0]+'</td><td style="font-size:12px;padding:5px 8px">'+esc(r[1])+'</td></tr>'}).join('')+
+    '</table><div style="margin-top:14px;display:flex;gap:8px"><button class="btn br fw" onclick="banDev(\''+id+'\',\''+jsq(dev.username||'')+'\');closeModal(\'modal-user\')">🚫 Sperren</button></div>'
+  openModal('modal-user')
+}
+
+// ── Claims ───────────────────────────────────────────────────────
+function loadClaims(){
+  var tbody=document.getElementById('claims-tbody')
+  if(tbody) tbody.innerHTML='<tr><td colspan="6" class="empty">Lade...</td></tr>'
+  req('/api/admin/claims?all=1').then(function(d){
+    if(!tbody) return
+    var claims=Array.isArray(d)?d:(d.claims||[])
+    if(!claims.length){
+      tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--mut)">Keine ausstehenden Claims</td></tr>'
+      return
+    }
+    tbody.innerHTML=claims.map(function(cl){
+      var u=cl.userId||{}
+      var id=cl._id
+      var emailLine=(cl.proofType==='email'&&cl.proofEmail)
+        ?'<div style="font-size:10px;color:#60a5fa">'+esc(cl.proofEmail)+'</div>':''
+      var screenshotUrl=safeHref(cl.proofScreenshot)
+      var imgLink=screenshotUrl
+        ?'<a href="'+screenshotUrl+'" target="_blank" rel="noopener noreferrer" style="font-size:10px;color:#f59e0b">Screenshot</a>':''
+      var actions
+      if(cl.status==='pending'){
+        actions='<button class="btn bg sm" onclick="approveClaim('+JSON.stringify(id)+')">'+'OK</button>'
+               +'<button class="btn br sm" onclick="rejectClaim('+JSON.stringify(id)+')">'+'X</button>'
+      }else if(cl.status==='approved'&&cl.reserved){
+        actions='<button class="btn bg sm" onclick="releaseClaim('+JSON.stringify(id)+')">'+'Freigeben</button>'
+      }else{
+        actions='<span class="bdg brg">Erledigt</span>'
+      }
+      return '<tr>'
+        +'<td style="font-family:monospace;font-weight:700;color:#f59e0b">#'+esc(cl.requestedUin||cl.uin||'?')+'</td>'
+        +'<td><b>'+esc(u.username||cl.username||'?')+'</b><br><span style="font-size:9px;color:var(--mut)">#'+esc(String(u.uin||''))+'</span></td>'
+        +'<td>'+esc(u.email||cl.email||'?')+'<br>'+esc(cl.proofType||'?')+'<br>'+emailLine+imgLink+'</td>'
+        +'<td style="color:var(--mut)">'+fd(cl.createdAt)+'</td>'
+        +'<td><span class="bdg '+(cl.status==='approved'?'brg':cl.status==='rejected'?'brd':'bry')+'">'+esc(cl.status||'pending')+'</span></td>'
+        +'<td><div class="ra">'+actions+'</div></td></tr>'
+    }).join('')
+  }).catch(function(){
+    if(tbody) tbody.innerHTML='<tr><td colspan="6" class="empty">Fehler beim Laden</td></tr>'
+  })
+}
+function approveClaim(id){req('/api/admin/claims/'+id+'/approve',{method:'POST',json:{}}).then(function(){toast('✓ Genehmigt');loadClaims()}).catch(function(){toast('Fehler',false)})}
+function releaseClaim(id){if(!confirm('Vorbehalt aufheben?'))return;req('/api/admin/claims/'+id+'/release',{method:'POST'}).then(function(){toast('🔓 Freigegeben');loadClaims()}).catch(function(){toast('Fehler',false)})}
+function rejectClaim(id){var note=prompt('Ablehnungsgrund:');if(note===null)return;req('/api/admin/claims/'+id+'/reject',{method:'POST',json:{note:note||'Abgelehnt'}}).then(function(){toast('✕ Abgelehnt');loadClaims()}).catch(function(){toast('Fehler',false)})}
+
+// ── Staff ────────────────────────────────────────────────────────
+function loadStaff(){
+  req('/api/admin/staff').then(function(d){
+    var tbody=document.getElementById('staff-tbody')
+    var staff=d.staff||d||[]
+    if(!staff.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Keine Mitarbeiter</td></tr>';return}
+    tbody.innerHTML=staff.map(function(s){return '<tr><td style="font-weight:600">'+esc(s.name||s.username||'?')+'</td><td><span class="bdg '+(s.role==='moderator'?'brb':s.role==='support'?'brg':'bry')+'">'+esc(s.role||'?')+'</span></td><td style="font-family:monospace;font-size:10px;color:var(--mut)">'+esc(s.token||'?').slice(0,20)+'…</td><td style="color:var(--mut)">'+fd(s.createdAt)+'</td><td><button class="btn bdel sm" onclick="revokeStaff(\''+s._id+'\')">Entfernen</button></td></tr>'}).join('')
+  }).catch(function(){})
+}
+
+function showInviteModal(){openModal('modal-invite');document.getElementById('invite-result').style.display='none'}
+function createInvite(){
+  var role=document.getElementById('invite-role').value
+  if(!role){toast('Rolle wählen',false);return}
+  req('/api/admin/staff/invite',{method:'POST',json:{role:role}}).then(function(d){
+    if(d.token||d.staffToken){
+      var token=d.token||d.staffToken
+      document.getElementById('invite-token').value=token
+      document.getElementById('invite-result').style.display='block'
+      toast('✓ Token generiert')
+    }else toast('Fehler: Kein Token',false)
+  }).catch(function(){toast('Fehler beim Erstellen',false)})
+}
+function sendInvite(){ createInvite() }
+function copyToken(){var t=document.getElementById('invite-token');t.select();document.execCommand('copy');toast('Token kopiert')}
+function revokeStaff(id){if(!confirm('Mitarbeiter entfernen?'))return;req('/api/admin/staff/'+id,{method:'DELETE'}).then(function(){toast('Entfernt');loadStaff()}).catch(function(){toast('Fehler',false)})}
+
+// ── System Logs ──────────────────────────────────────────────────
+function loadSysLogs(){
+  var el=document.getElementById('sys-logs')
+  req('/api/admin/system-logs').then(function(d){
+    var logs=d.logs||d||[]
+    if(!logs.length){el.innerHTML='<span style="color:var(--mut)">[System] Keine Logs vorhanden</span>';return}
+    el.innerHTML=logs.map(function(l){
+      var col=l.level==='error'?'#f87171':l.level==='warn'?'#fbbf24':'#4ade80'
+      return '<div style="color:'+col+';margin-bottom:2px">['+new Date(l.timestamp||l.createdAt||Date.now()).toLocaleTimeString('de-DE')+'] ['+esc((l.level||'INFO').toUpperCase())+'] '+esc(l.message||JSON.stringify(l))+'</div>'
+    }).join('')
+    el.scrollTop=el.scrollHeight
+  }).catch(function(){
+    el.innerHTML='<div style="color:var(--mut)">[System] '+new Date().toLocaleTimeString('de-DE')+' — System gestartet, Logs werden gesammelt...</div>'
+  })
+}
+
+// ── Actions ──────────────────────────────────────────────────────
+function ban(id,name){
+  var r=prompt('Grund für Sperrung von "'+name+'":')
+  if(r===null) return
+  req('/api/admin/ban-user',{method:'POST',json:{userId:id,reason:r||'Verstoß'}}).then(function(){toast('🚫 '+name+' gesperrt');loadUsers(1);loadStats()}).catch(function(){toast('Fehler',false)})
+}
+function unban(id,name){
+  req('/api/admin/unban-user',{method:'POST',json:{userId:id}}).then(function(){toast('✓ '+name+' entsperrt');loadUsers(1);loadStats()}).catch(function(){toast('Fehler',false)})
+}
+
+function deleteUser(id,name){if(!confirm('ACHTUNG: Nutzer "'+name+'" unwiderruflich löschen?'))return;req('/api/admin/users/'+id,{method:'DELETE'}).then(function(){toast('Gelöscht');loadUsers(1)}).catch(function(){toast('Fehler',false)})}
+function openMsgs(id,name){
+  document.getElementById('modal-user-title').firstChild.textContent='Nachrichten: '+name
+  document.getElementById('modal-user-body').innerHTML='<div class="empty">Lade…</div>'
+  openModal('modal-user')
+  req('/api/admin/users/'+id+'/messages').then(function(d){
+    var msgs=d.messages||d||[]
+    if(!msgs.length){document.getElementById('modal-user-body').innerHTML='<div class="empty">Keine Nachrichten</div>';return}
+    document.getElementById('modal-user-body').innerHTML=msgs.slice(0,30).map(function(m){
+      return '<div style="padding:7px 0;border-bottom:1px solid var(--bdr)">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:3px">' +
+          '<span class="bdg brb">'+esc(m.type||'text')+'</span>' +
+          '<span style="font-size:10px;color:var(--mut)">'+fd(m.createdAt)+'</span>' +
+        '</div>' +
+        '<div style="font-size:12px">'+esc(m.content||'[Datei]')+'</div>' +
+      '</div>'
+    }).join('')
+  }).catch(function(){toast('Fehler beim Laden',false)})
+}
+function openPw(id,name){
+  S.pwId=id; document.getElementById('pw-name').textContent=name
+  document.getElementById('pw-new').value=''; document.getElementById('pw-confirm').value=''
+  document.getElementById('pw-err').style.display='none'
+  openModal('modal-pw')
+}
+function savePw(){
+  var n=document.getElementById('pw-new').value, co=document.getElementById('pw-confirm').value
+  var err=document.getElementById('pw-err')
+  if(n.length<10){err.textContent='Mind. 10 Zeichen';err.style.display='block';return}
+  if(n!==co){err.textContent='Stimmen nicht überein';err.style.display='block';return}
+  req('/api/admin/reset-user-password',{method:'POST',json:{userId:S.pwId,newPassword:n}}).then(function(d){toast(d.message||'Passwort gesetzt');closeModal('modal-pw')}).catch(function(){err.textContent='Fehler';err.style.display='block'})
+}
+function dismiss(id){req('/api/admin/reports/'+id+'/dismiss',{method:'POST'}).then(function(){toast('Erledigt');loadReports()}).catch(function(){toast('Fehler',false)})}
+function genReport(){toast('Erstelle Bericht…');req('/api/admin/generate-report',{method:'POST',json:{markAsReported:false}}).then(function(d){if(!d.report){toast('✅ Keine Fälle');return}dl(JSON.stringify(d.report,null,2),'nokki_bericht_'+ts()+'.json');toast('Bericht exportiert')}).catch(function(){toast('Fehler',false)})}
+function srep(id){req('/api/admin/generate-report',{method:'POST',json:{logIds:[id],markAsReported:false}}).then(function(d){dl(JSON.stringify(d.report,null,2),'nokki_vorfall_'+id+'.json');toast('Einzelbericht')}).catch(function(){toast('Fehler',false)})}
+function mrep(id){var ref=prompt('BKA-Aktenzeichen (optional):');req('/api/admin/security-logs/'+id+'/mark-reported',{method:'POST',json:{reference:ref||''}}).then(function(){toast('Als gemeldet markiert');loadLogs()}).catch(function(){toast('Fehler',false)})}
+function delLog(id){if(!confirm('Log löschen?'))return;req('/api/admin/security-logs/'+id,{method:'DELETE'}).then(function(){toast('Gelöscht');loadLogs()}).catch(function(){toast('Fehler',false)})}
+function deleteAllLogs(){if(!confirm('ALLE Security-Logs löschen? (Nicht rückgängig!)'))return;req('/api/admin/security-logs',{method:'DELETE'}).then(function(){toast('Alle gelöscht');loadLogs()}).catch(function(){toast('Fehler',false)})}
+function banDev(id,name){if(!confirm('Developer "'+name+'" sperren?'))return;req('/api/admin/users/'+id+'/ban',{method:'POST'}).then(function(){toast('Developer gesperrt');loadDevStats()}).catch(function(){toast('Fehler',false)})}
+function banBot(id,name){if(!confirm('Bot "'+name+'" deaktivieren?'))return;req('/api/admin/bots/'+id+'/disable',{method:'POST'}).then(function(){toast('Bot deaktiviert');loadDevStats()}).catch(function(){toast('Fehler',false)})}
+function showBroadcast(){openModal('modal-broadcast')}
+function sendBroadcast(){var msg=document.getElementById('bc-msg').value.trim();if(!msg){toast('Nachricht fehlt',false);return}req('/api/admin/broadcast',{method:'POST',json:{message:msg}}).then(function(){toast('Broadcast gesendet');closeModal('modal-broadcast');document.getElementById('bc-msg').value=''}).catch(function(){toast('Fehler',false)})}
+function showSettings(){showSection('settings')}
+function findUser(){var q=prompt('UIN oder Username suchen:');if(q){showSection('users');var el=document.getElementById('usrq');if(el){el.value=q;loadUsers(1)}}}
+function doBackup(){toast('Backup wird erstellt…');req('/api/admin/backup',{method:'POST'}).then(function(d){toast(d.message||'Backup erstellt')}).catch(function(){toast('Fehler',false)})}
+function exportJSON(){req('/api/admin/export').then(function(d){dl(JSON.stringify(d,null,2),'nokki_export_'+ts()+'.json');toast('Export erstellt')}).catch(function(){toast('Fehler',false)})}
+function clearCache(){req('/api/admin/cache/clear',{method:'POST'}).then(function(){toast('Cache geleert')}).catch(function(){toast('Fehler',false)})}
+function changeSecret(){var ns=document.getElementById('new-secret').value.trim();if(!ns){toast('Kein Secret eingegeben',false);return}req('/api/admin/settings/secret',{method:'POST',json:{newSecret:ns}}).then(function(){toast('Secret geändert — bitte neu anmelden');setTimeout(doLogout,1500)}).catch(function(){toast('Fehler',false)})}
+function verifyUser(id,name){req('/api/admin/users/'+id+'/verify-email',{method:'POST'}).then(function(){toast(name+' verifiziert');loadUsers(1)}).catch(function(){toast('Fehler',false)})}
+
+// ── loadAll ──────────────────────────────────────────────────────
+function loadAll(){
+  loadStats()
+  if(document.getElementById('sec-database').classList.contains('active')) loadDbStats()
+}
+
+var maintActive = false
+var restoreData = null
+
+function toggleMaintenance(){
+  maintActive=!maintActive
+  var btn=document.getElementById('maint-btn')
+  var dot=document.getElementById('maint-dot')
+  var lbl=document.getElementById('maint-label')
+  var msg=document.getElementById('maint-msg').value||'Wartungsarbeiten. Wir sind bald wieder da.'
+  req('/api/admin/maintenance',{method:'POST',json:{active:maintActive,message:msg}}).then(function(){
+    if(maintActive){
+      dot.style.background='#22c55e';lbl.textContent='Aktiv'
+      btn.textContent='🔧 Wartungsmodus deaktivieren';btn.className='btn br'
+      toast('Wartungsmodus aktiviert')
+    }else{
+      dot.style.background='#ef4444';lbl.textContent='Inaktiv'
+      btn.textContent='🔧 Wartungsmodus aktivieren';btn.className='btn bo'
+      toast('Wartungsmodus deaktiviert')
+    }
+  }).catch(function(){
+    // Lokaler State ohne Server
+    maintActive=!maintActive
+    toast('Server-Endpunkt nicht verfügbar — lokal umgeschaltet')
+  })
+}
+
+function doBackupDownload(type){
+  toast('Erstelle '+type+' Backup…')
+  req('/api/admin/backup?type='+type).then(function(d){
+    if(d.data||d.users||d.messages){
+      dl(JSON.stringify(d,null,2),'nokki_backup_'+type+'_'+ts()+'.json')
+      toast('Backup heruntergeladen')
+    }else{
+      // Fallback: stats exportieren
+      req('/api/admin/stats').then(function(sd){
+        dl(JSON.stringify({type:type,exported:new Date().toISOString(),data:sd},null,2),'nokki_backup_'+type+'_'+ts()+'.json')
+        toast('Export erstellt')
+      })
+    }
+  }).catch(function(){toast('Backup-Fehler',false)})
+}
+
+function loadBackupList(){
+  req('/api/admin/backup').then(function(d){
+    var el=document.getElementById('backup-list')
+    if(!el) return
+    var backups=d.backups||[]
+    if(!backups.length){el.innerHTML='<div class="empty">Keine Backups gefunden</div>';return}
+    el.innerHTML=backups.map(function(b){
+      var date=new Date(b.created).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'})
+      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px">'+
+        '<span style="font-size:14px">🗜️</span>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(b.name)+'</div>'+
+          '<div style="font-size:10px;color:var(--mut)">'+date+' · '+esc(b.sizeHuman)+'</div>'+
+        '</div>'+
+        '<button onclick="dlBackup('+JSON.stringify(b.name)+')" '+
+          'style="padding:4px 10px;border-radius:6px;background:rgba(22,163,74,.12);color:#86efac;border:1px solid rgba(22,163,74,.25);font-size:11px;cursor:pointer;white-space:nowrap">'+
+          '📥 Download'+
+        '</button>'+
+      '</div>'
+    }).join('')
+  }).catch(function(){
+    var el=document.getElementById('backup-list')
+    if(el) el.innerHTML='<div class="empty">Fehler beim Laden</div>'
+  })
+}
+
+function dlBackup(filename){
+  fetch('/api/admin/backup/download/'+encodeURIComponent(filename), {headers:getHeaders()})
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status)
+      return r.blob()
+    })
+    .then(function(blob){
+      var a=document.createElement('a')
+      a.href=URL.createObjectURL(blob)
+      a.download=filename
+      a.click()
+      URL.revokeObjectURL(a.href)
+      toast('Download gestartet')
+    })
+    .catch(function(e){toast('Download fehlgeschlagen: '+e.message,false)})
+}
+
+function handleRestoreFile(file){
+  if(!file) return
+  var reader=new FileReader()
+  reader.onload=function(e){
+    try{
+      restoreData=JSON.parse(e.target.result)
+      var el=document.getElementById('restore-status')
+      el.style.display='block';el.style.color='#86efac'
+      el.textContent='Datei geladen: '+file.name+' ('+Math.round(file.size/1024)+' KB)'
+      document.getElementById('restore-btn').style.display='block'
+    }catch(err){
+      var el=document.getElementById('restore-status')
+      el.style.display='block';el.style.color='#f87171'
+      el.textContent='Ungültige JSON-Datei'
+    }
+  }
+  reader.readAsText(file)
+}
+
+function doRestore(){
+  if(!restoreData){toast('Keine Datei geladen',false);return}
+  if(!confirm('ACHTUNG: Backup wiederherstellen?\n\nDies überschreibt vorhandene Daten!'))return
+  req('/api/admin/restore',{method:'POST',json:restoreData}).then(function(d){
+    toast(d.message||'Restore abgeschlossen')
+    restoreData=null
+    document.getElementById('restore-btn').style.display='none'
+    document.getElementById('restore-status').style.display='none'
+    loadAll()
+  }).catch(function(){toast('Restore-Fehler',false)})
+}
+
+function loadDbStats(){
+  req('/api/admin/stats').then(function(d){
+    setText('db-users',   (d.users&&d.users.total)||0)
+    setText('db-msgs',    (d.stats&&d.stats.totalMessages)||0)
+    setText('db-groups',  (d.stats&&d.stats.totalGroups)||0)
+    setText('db-channels',(d.stats&&d.stats.totalChannels)||0)
+  }).catch(function(){})
+}
+
+// Live Aktivitätsverlauf — alle 15 Sekunden
+var activityTimer = null
+function startLiveActivity(){
+  if(activityTimer) clearInterval(activityTimer)
+  activityTimer = setInterval(function(){
+    if(document.getElementById('sec-dashboard').classList.contains('active')){
+      loadActivityFeed()
+    }
+  }, 15000)
+}
+
+// ── Auto-Login ───────────────────────────────────────────────────
+var mobileNavToggle=document.getElementById('mobile-nav-toggle')
+if(mobileNavToggle){
+  mobileNavToggle.addEventListener('click',function(){
+    var sidebar=document.getElementById('sidebar')
+    var open=sidebar.classList.toggle('open')
+    mobileNavToggle.setAttribute('aria-expanded',String(open))
+  })
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal.open').forEach(function(m){m.classList.remove('open')})
+    var sidebar=document.getElementById('sidebar');if(sidebar)sidebar.classList.remove('open')
+    if(mobileNavToggle)mobileNavToggle.setAttribute('aria-expanded','false')
+  }
+})
+checkServerHealth()
+setInterval(checkServerHealth,30000)
+
+if(S.secret || S.staffToken){
+  var resumeUrl=S.staffToken?'/api/admin/my-role':'/api/admin/stats'
+  fetch(resumeUrl,{headers:getHeaders()}).then(function(r){
+    if(!r.ok) throw new Error('Sitzung abgelaufen')
+    return r.json().catch(function(){return {}})
+  }).then(function(d){
+    if(S.staffToken){
+      if(!d.role) throw new Error('Sitzung abgelaufen')
+      S.role=d.role;S.permissions=d.permissions||[]
+    }else{
+      S.role='superadmin';S.permissions=['*']
+    }
+    start()
+  }).catch(function(){
+    doLogout()
+    document.getElementById('ls-status').textContent='Sitzung abgelaufen – bitte neu anmelden'
+  })
+}
+</script>
+</body>
+</html>

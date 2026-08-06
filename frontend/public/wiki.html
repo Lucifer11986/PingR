@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nokki Wiki – Hilfe & Dokumentation</title>
+<meta name="description" content="Alles was du über Nokki wissen musst. Erste Schritte, Features erklärt, Sicherheit und häufige Fragen."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090f;--bg2:#0d0f18;--bg3:#13141f;--bg4:#1a1b28;
+  --amb:#b46a0e;--amb2:#e8b86d;
+  --txt:#f1f0f8;--mut:#8b8aa8;--dim:#6b7280;
+  --bdr:rgba(255,255,255,.08);
+  --grn:#22c55e;--blu:#3b82f6;--pur:#8b5cf6;--red:#ef4444;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.sidebar{
+  width:280px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--bdr);
+  position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;
+  padding:0 0 40px;
+}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+
+.sidebar-header{padding:20px 24px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;position:sticky;top:0;background:var(--bg2);z-index:10}
+.logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--amb),var(--amb2));display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0}
+.sidebar-title{font-size:15px;font-weight:700}
+.sidebar-sub{font-size:11px;color:var(--mut);font-weight:500}
+
+.nav-section{padding:20px 24px 8px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--amb2)}
+.nav-link{display:flex;align-items:center;gap:9px;padding:8px 24px;font-size:13.5px;color:var(--mut);text-decoration:none;transition:all .15s;border-left:2px solid transparent;cursor:pointer}
+.nav-link:hover{color:var(--txt);background:rgba(255,255,255,.03)}
+.nav-link.active{color:var(--amb2);border-left-color:var(--amb2);background:rgba(232,184,109,.05)}
+.nav-icon{font-size:15px;flex-shrink:0;width:20px;text-align:center}
+
+/* ── Main ─────────────────────────────────────────────────── */
+.main{margin-left:280px;flex:1;min-height:100vh}
+
+/* ── Top Bar ──────────────────────────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(8,9,15,.9);border-bottom:1px solid var(--bdr);
+  backdrop-filter:blur(20px);
+  padding:0 48px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:8px 14px;width:280px;transition:border-color .2s}
+.search-box:focus-within{border-color:rgba(232,184,109,.3)}
+.search-box input{background:none;border:none;outline:none;color:var(--txt);font-size:13px;width:100%}
+.search-box input::placeholder{color:var(--dim)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,var(--amb),var(--amb2));color:#fff}
+.btn-ghost{background:rgba(255,255,255,.05);color:var(--mut);border:1px solid var(--bdr)}
+.btn-ghost:hover{color:var(--txt);background:rgba(255,255,255,.08)}
+
+/* ── Content ──────────────────────────────────────────────── */
+.content{max-width:820px;margin:0 auto;padding:56px 48px 100px}
+
+/* Hero Section */
+.wiki-hero{background:linear-gradient(135deg,rgba(180,106,14,.08),rgba(139,92,246,.06));border:1px solid rgba(232,184,109,.15);border-radius:20px;padding:40px;margin-bottom:48px;position:relative;overflow:hidden}
+.wiki-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(232,184,109,.12),transparent 70%)}
+.wiki-hero h1{font-size:clamp(24px,3.5vw,36px);font-weight:800;letter-spacing:-1px;margin-bottom:10px}
+.wiki-hero p{font-size:15px;color:var(--mut);line-height:1.7;max-width:560px}
+.hero-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:28px}
+.hero-card{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px;text-decoration:none;transition:all .2s;cursor:pointer}
+.hero-card:hover{border-color:rgba(232,184,109,.3);background:rgba(232,184,109,.04);transform:translateY(-2px)}
+.hero-card-icon{font-size:22px;flex-shrink:0}
+.hero-card-text{font-size:13px;font-weight:600;color:var(--txt)}
+.hero-card-sub{font-size:11px;color:var(--mut);margin-top:2px}
+
+/* Article */
+article{display:none}
+article.active{display:block}
+
+h2.page-title{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+.page-subtitle{font-size:15px;color:var(--mut);margin-bottom:40px;line-height:1.6;padding-bottom:24px;border-bottom:1px solid var(--bdr)}
+
+h3.section-title{font-size:18px;font-weight:700;margin:40px 0 16px;letter-spacing:-.3px;display:flex;align-items:center;gap:10px}
+h3.section-title::before{content:'';display:block;width:3px;height:20px;border-radius:2px;background:linear-gradient(180deg,var(--amb),var(--amb2));flex-shrink:0}
+
+h4.sub-title{font-size:14px;font-weight:700;color:var(--amb2);margin:24px 0 10px;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+
+p{font-size:14.5px;color:var(--mut);line-height:1.8;margin-bottom:14px}
+p strong{color:var(--txt);font-weight:600}
+
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:0;margin:24px 0}
+.step-item{display:flex;gap:20px;position:relative;padding-bottom:28px}
+.step-item:last-child{padding-bottom:0}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--bdr)}
+.step-num{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--amb),var(--amb2));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;position:relative;z-index:1}
+.step-body h4{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--txt)}
+.step-body p{font-size:13.5px;margin-bottom:0}
+
+/* Info boxes */
+.info-box{border-radius:12px;padding:16px 18px;margin:18px 0;display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.7}
+.info-box.tip{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);color:#86efac}
+.info-box.warning{background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.18);color:#fde047}
+.info-box.info{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);color:#93c5fd}
+.info-box.danger{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);color:#fca5a5}
+.info-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.info-text strong{color:inherit;display:block;margin-bottom:3px}
+
+/* Feature cards */
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:20px 0}
+.feature-card{background:var(--bg3);border:1px solid var(--bdr);border-radius:14px;padding:20px;transition:all .2s}
+.feature-card:hover{border-color:rgba(232,184,109,.2);transform:translateY(-2px)}
+.feature-card-icon{font-size:26px;margin-bottom:12px}
+.feature-card h4{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--txt)}
+.feature-card p{font-size:13px;margin-bottom:0}
+
+/* Tag pills */
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;margin:2px}
+.tag.green{background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.2)}
+.tag.amber{background:rgba(232,184,109,.1);color:var(--amb2);border:1px solid rgba(232,184,109,.2)}
+.tag.blue{background:rgba(59,130,246,.1);color:#93c5fd;border:1px solid rgba(59,130,246,.2)}
+.tag.purple{background:rgba(139,92,246,.1);color:#c4b5fd;border:1px solid rgba(139,92,246,.2)}
+.tag.gray{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
+
+/* Screenshot mockup */
+.mock{background:var(--bg3);border:1px solid var(--bdr);border-radius:14px;overflow:hidden;margin:20px 0;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.mock-bar{background:var(--bg4);border-bottom:1px solid var(--bdr);padding:10px 16px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut)}
+.mock-dots{display:flex;gap:5px}
+.mock-dot{width:9px;height:9px;border-radius:50%}
+.mock-body{padding:18px}
+
+/* Keyboard shortcuts */
+.kbd{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr);border-radius:5px;padding:2px 7px;color:var(--txt);font-family:monospace}
+
+/* Table */
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px}
+th{background:var(--bg3);color:var(--amb2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:10px 16px;text-align:left;border-bottom:1px solid var(--bdr)}
+td{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--mut)}
+td strong{color:var(--txt)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* Divider */
+hr{border:none;border-top:1px solid var(--bdr);margin:36px 0}
+
+/* Breadcrumb */
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim);margin-bottom:24px}
+.breadcrumb a{color:var(--mut);text-decoration:none;cursor:pointer}
+.breadcrumb a:hover{color:var(--amb2)}
+
+/* Mobile */
+.menu-toggle{display:none;position:fixed;bottom:24px;right:24px;z-index:200;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--amb),var(--amb2));border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .topbar{padding:0 20px}
+  .content{padding:32px 20px 80px}
+  .search-box{display:none}
+  .menu-toggle{display:flex;align-items:center;justify-content:center}
+  .hero-cards{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar ─────────────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-mark">N</div>
+    <div>
+      <div class="sidebar-title">Nokki Wiki</div>
+      <div class="sidebar-sub">Hilfe & Dokumentation</div>
+    </div>
+  </div>
+
+  <div class="nav-section">Erste Schritte</div>
+  <a class="nav-link active" onclick="show('start')"><span class="nav-icon">🏠</span>Übersicht</a>
+  <a class="nav-link" onclick="show('register')"><span class="nav-icon">📝</span>Registrieren</a>
+  <a class="nav-link" onclick="show('login')"><span class="nav-icon">🔑</span>Anmelden</a>
+  <a class="nav-link" onclick="show('interface')"><span class="nav-icon">🖥️</span>Die Oberfläche</a>
+
+  <div class="nav-section">Nachrichten & Chats</div>
+  <a class="nav-link" onclick="show('messages')"><span class="nav-icon">💬</span>Nachrichten senden</a>
+  <a class="nav-link" onclick="show('media')"><span class="nav-icon">📎</span>Dateien & Medien</a>
+  <a class="nav-link" onclick="show('groups')"><span class="nav-icon">👥</span>Gruppen</a>
+  <a class="nav-link" onclick="show('channels')"><span class="nav-icon">📡</span>Channels</a>
+  <a class="nav-link" onclick="show('voice')"><span class="nav-icon">🔊</span>Voice Channels</a>
+  <a class="nav-link" onclick="show('calls')"><span class="nav-icon">📞</span>Anrufe</a>
+
+  <div class="nav-section">Besondere Features</div>
+  <a class="nav-link" onclick="show('identities')"><span class="nav-icon">🎭</span>Multi-Identity</a>
+  <a class="nav-link" onclick="show('status')"><span class="nav-icon">📸</span>Status & Stories</a>
+  <a class="nav-link" onclick="show('viewonce')"><span class="nav-icon">👁️</span>Einmal-Ansehen</a>
+  <a class="nav-link" onclick="show('timer')"><span class="nav-icon">⏰</span>Zeitgesteuerte Msg</a>
+  <a class="nav-link" onclick="show('capsule')"><span class="nav-icon">⌛</span>Zeitkapsel</a>
+
+  <div class="nav-section">Sicherheit & Privatsphäre</div>
+  <a class="nav-link" onclick="show('e2e')"><span class="nav-icon">🔒</span>Verschlüsselung</a>
+  <a class="nav-link" onclick="show('screenshot')"><span class="nav-icon">🛡️</span>Screenshot-Sperre</a>
+  <a class="nav-link" onclick="show('fakepin')"><span class="nav-icon">🎭</span>Fake-PIN</a>
+  <a class="nav-link" onclick="show('2fa')"><span class="nav-icon">🔐</span>Zwei-Faktor-Auth</a>
+  <a class="nav-link" onclick="show('privacy')"><span class="nav-icon">👤</span>Datenschutz-Einst.</a>
+
+  <div class="nav-section">Einstellungen</div>
+  <a class="nav-link" onclick="show('profile')"><span class="nav-icon">✏️</span>Profil bearbeiten</a>
+  <a class="nav-link" onclick="show('notifications')"><span class="nav-icon">🔔</span>Benachrichtigungen</a>
+  <a class="nav-link" onclick="show('themes')"><span class="nav-icon">🎨</span>Design & Themes</a>
+  <a class="nav-link" onclick="show('account')"><span class="nav-icon">⚙️</span>Konto verwalten</a>
+
+  <div class="nav-section">Hilfe</div>
+  <a class="nav-link" onclick="show('faq')"><span class="nav-icon">❓</span>Häufige Fragen</a>
+  <a class="nav-link" href="/developers" target="_blank"><span class="nav-icon">🤖</span>Developer Docs</a>
+  <a class="nav-link" href="/" ><span class="nav-icon">🏠</span>Zurück zur App</a>
+</aside>
+
+<!-- ── Main ────────────────────────────────────────────────── -->
+<div class="main">
+  <div class="topbar">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" placeholder="Wiki durchsuchen…" id="search-input" oninput="searchWiki(this.value)"/>
+    </div>
+    <div class="topbar-right">
+      <a href="/" class="btn btn-ghost">← Zurück</a>
+      <a href="/chat" class="btn btn-gold">App öffnen</a>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════ START ══════ -->
+    <article id="art-start" class="active">
+      <div class="wiki-hero">
+        <h1>👋 Willkommen bei Nokki</h1>
+        <p>Nokki ist dein sicherer Messenger für alle Lebensbereiche. Diese Wiki erklärt dir alles – von der Registrierung bis zu den fortgeschrittenen Sicherheits-Features. Keine Vorkenntnisse nötig.</p>
+        <div class="hero-cards">
+          <div class="hero-card" onclick="show('register')">
+            <span class="hero-card-icon">🚀</span>
+            <div><div class="hero-card-text">Erste Schritte</div><div class="hero-card-sub">In 3 Min einsatzbereit</div></div>
+          </div>
+          <div class="hero-card" onclick="show('messages')">
+            <span class="hero-card-icon">💬</span>
+            <div><div class="hero-card-text">Nachrichten</div><div class="hero-card-sub">Chaten & kommunizieren</div></div>
+          </div>
+          <div class="hero-card" onclick="show('identities')">
+            <span class="hero-card-icon">🎭</span>
+            <div><div class="hero-card-text">Multi-Identity</div><div class="hero-card-sub">Dein Alleinstellungsmerkmal</div></div>
+          </div>
+          <div class="hero-card" onclick="show('fakepin')">
+            <span class="hero-card-icon">🛡️</span>
+            <div><div class="hero-card-text">Sicherheits-Features</div><div class="hero-card-sub">Fake-PIN & mehr</div></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Was ist Nokki?</h3>
+      <p>Nokki ist ein kostenloser Messenger der komplett auf deutschen Servern läuft. Anders als WhatsApp oder Telegram brauchst du <strong>keine Handynummer</strong> – nur eine E-Mail-Adresse reicht. Nokki hat ein einzigartiges <strong>Multi-Identity System</strong>: Du kannst in einer App mehrere "Persönlichkeiten" haben – eine für Freunde, eine für die Arbeit und eine anonyme.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card"><div class="feature-card-icon">🇩🇪</div><h4>Server in Deutschland</h4><p>Nokki wird auf eigener Infrastruktur in Deutschland betrieben.</p></div>
+        <div class="feature-card"><div class="feature-card-icon">📵</div><h4>Keine Handynummer</h4><p>Registrierung nur mit E-Mail und selbst gewähltem Nutzernamen.</p></div>
+        <div class="feature-card"><div class="feature-card-icon">💸</div><h4>100% kostenlos</h4><p>Alle Features sind gratis. Kein Abo, keine versteckten Kosten.</p></div>
+        <div class="feature-card"><div class="feature-card-icon">🔒</div><h4>Geschützte Übertragung</h4><p>Die Verbindung zwischen deinem Gerät und Nokki wird mit TLS geschützt.</p></div>
+      </div>
+
+      <h3 class="section-title">Schnellstart</h3>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body"><h4>Account erstellen</h4><p>Geh auf <strong>lumestack.de/register</strong> und registriere dich. Du bekommst eine persönliche UIN-Nummer (ähnlich wie bei ICQ früher).</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body"><h4>E-Mail bestätigen</h4><p>Prüfe dein Postfach und klicke auf den Bestätigungs-Link. Danach ist dein Account sofort aktiv.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body"><h4>Kontakte hinzufügen</h4><p>Teile deine UIN mit Freunden oder suche nach deren Nutzernamen. Über <strong>+ Kontakt</strong> kannst du direkt loslegen.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body"><h4>Loslegen!</h4><p>Schreibe deine erste Nachricht. Die App läuft direkt im Browser – kein Download nötig.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ══════ REGISTRIEREN ══════ -->
+    <article id="art-register">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Registrieren</span></div>
+      <h2 class="page-title">📝 Registrieren</h2>
+      <p class="page-subtitle">Erstelle deinen Nokki-Account in weniger als 2 Minuten. Keine Handynummer nötig.</p>
+
+      <h3 class="section-title">Was du brauchst</h3>
+      <p>Für die Registrierung benötigst du nur zwei Dinge:</p>
+      <ul style="padding-left:20px;margin-bottom:16px">
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Eine gültige <strong style="color:var(--txt)">E-Mail-Adresse</strong> (für die Bestätigung)</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Einen selbst gewählten <strong style="color:var(--txt)">Nutzernamen</strong> (1–30 Zeichen)</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Ein sicheres <strong style="color:var(--txt)">Passwort</strong> (mindestens 6 Zeichen)</li>
+      </ul>
+
+      <div class="info-box tip"><span class="info-icon">✅</span><div class="info-text"><strong>Kein Klarnamen nötig!</strong>Du kannst jeden Nutzernamen wählen. Dein echter Name wird nirgendwo gespeichert oder angezeigt.</div></div>
+
+      <h3 class="section-title">Schritt für Schritt</h3>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body"><h4>Registrierungsseite öffnen</h4><p>Gehe zu <strong>lumestack.de/register</strong> oder klicke auf "Registrieren" auf der Startseite.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body"><h4>Daten eingeben</h4><p>Gib deinen Wunsch-Nutzernamen, deine E-Mail-Adresse und ein Passwort ein. Löse das kurze CAPTCHA.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body"><h4>E-Mail bestätigen</h4><p>Du bekommst eine E-Mail mit einem Bestätigungs-Link. Klicke darauf – fertig!</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body"><h4>Deine UIN notieren</h4><p>Nach der Registrierung bekommst du eine persönliche <strong>UIN</strong> (eine 8-9-stellige Nummer). Das ist deine einzigartige ID – teile sie mit Freunden damit sie dich finden können.</p></div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Was ist eine UIN?</h3>
+      <p>UIN steht für <strong>User Identification Number</strong>. Es ist eine einzigartige Nummer die nur dir gehört – ähnlich wie eine Telefonnummer, aber ohne deinen echten Namen preiszugeben. Früher hatte ICQ so ein System, Nokki bringt das zurück.</p>
+      <p>Deine UIN findest du immer oben links im Chat neben deinem Namen, z.B. <span class="tag amber">#46472055</span></p>
+
+      <div class="info-box info"><span class="info-icon">ℹ️</span><div class="info-text"><strong>E-Mail nicht angekommen?</strong>Prüfe deinen Spam-Ordner. Warte 1–2 Minuten. Du kannst die E-Mail auch über "E-Mail erneut senden" nochmal anfordern.</div></div>
+    </article>
+
+    <!-- ══════ LOGIN ══════ -->
+    <article id="art-login">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Anmelden</span></div>
+      <h2 class="page-title">🔑 Anmelden</h2>
+      <p class="page-subtitle">So kommst du in deinen Account.</p>
+
+      <h3 class="section-title">Normales Login</h3>
+      <p>Gehe zu <strong>lumestack.de/login</strong> und gib deine E-Mail-Adresse und dein Passwort ein. Klicke auf "Anmelden".</p>
+
+      <div class="info-box warning"><span class="info-icon">⚠️</span><div class="info-text"><strong>Passwort vergessen?</strong>Klicke auf "Passwort vergessen" auf der Login-Seite. Du bekommst einen Reset-Link per E-Mail.</div></div>
+
+      <h3 class="section-title">Zwei-Faktor-Authentifizierung (2FA)</h3>
+      <p>Wenn du 2FA aktiviert hast, musst du nach dem Passwort noch einen 6-stelligen Code aus deiner Authenticator-App eingeben. Dieser Code ändert sich alle 30 Sekunden.</p>
+      <p>Mehr zu 2FA findest du unter <a onclick="show('2fa')" style="color:var(--amb2);cursor:pointer">🔐 Zwei-Faktor-Authentifizierung</a>.</p>
+
+      <h3 class="section-title">Fake-PIN Login</h3>
+      <p>Wenn du einen Fake-PIN eingerichtet hast und <strong>diesen</strong> anstelle deines echten Passworts eingibst, wirst du in einen leeren Schein-Account eingeloggt. Deine echten Chats bleiben unsichtbar.</p>
+      <p>Mehr dazu: <a onclick="show('fakepin')" style="color:var(--amb2);cursor:pointer">🎭 Fake-PIN Schein-Account</a>.</p>
+
+      <h3 class="section-title">Auto-Logout</h3>
+      <p>Aus Sicherheitsgründen wirst du nach <strong>30 Minuten Inaktivität</strong> automatisch ausgeloggt. Du musst dich dann neu anmelden.</p>
+    </article>
+
+    <!-- ══════ OBERFLÄCHE ══════ -->
+    <article id="art-interface">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Die Oberfläche</span></div>
+      <h2 class="page-title">🖥️ Die Oberfläche</h2>
+      <p class="page-subtitle">Ein schneller Überblick über die verschiedenen Bereiche der App.</p>
+
+      <h3 class="section-title">Aufbau der App</h3>
+      <table>
+        <tr><th>Bereich</th><th>Was ist das?</th></tr>
+        <tr><td><strong>Linke Seitenleiste</strong></td><td>Navigation: Start, Chats, Channels, Kontakte, Notizen, Settings, Suche</td></tr>
+        <tr><td><strong>Chat-Liste (Mitte links)</strong></td><td>Alle deine Chats, Gruppen und Channels. Mit Filter-Pills: Alle / Ungelesen / Gruppen / Channels</td></tr>
+        <tr><td><strong>Status-Kreise</strong></td><td>Oben in der Chat-Liste siehst du Stories von deinen Kontakten als Kreise</td></tr>
+        <tr><td><strong>Chat-Fenster (Mitte)</strong></td><td>Hier liest und schreibst du Nachrichten</td></tr>
+        <tr><td><strong>Rechte Seite</strong></td><td>Online-Freunde, Trending Channels, Schnell-Zugriff</td></tr>
+      </table>
+
+      <h3 class="section-title">Symbole im Chat-Header</h3>
+      <table>
+        <tr><th>Symbol</th><th>Bedeutung</th></tr>
+        <tr><td>⚙️</td><td>Gruppeneinstellungen (nur in Gruppen, nur für Admins)</td></tr>
+        <tr><td>🔊</td><td>Voice Channel öffnen/schließen</td></tr>
+        <tr><td>📷 / 🛡️</td><td>Screenshot-Sperre ein/ausschalten</td></tr>
+        <tr><td>🔍</td><td>In diesem Chat suchen</td></tr>
+        <tr><td>📌</td><td>Angepinnte Nachrichten anzeigen</td></tr>
+      </table>
+
+      <h3 class="section-title">Filter-Pills</h3>
+      <p>Über der Chat-Liste gibt es vier Filter:</p>
+      <p><span class="tag amber">Alle</span> zeigt alle Chats · <span class="tag blue">Ungelesen</span> nur Chats mit neuen Nachrichten · <span class="tag purple">Gruppen</span> nur Gruppenkonversationen · <span class="tag gray">Channels</span> nur abonnierte Channels</p>
+    </article>
+
+    <!-- ══════ NACHRICHTEN ══════ -->
+    <article id="art-messages">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Nachrichten senden</span></div>
+      <h2 class="page-title">💬 Nachrichten senden</h2>
+      <p class="page-subtitle">Alles über das Schreiben, Bearbeiten und Verwalten von Nachrichten.</p>
+
+      <h3 class="section-title">Erste Nachricht senden</h3>
+      <p>Klicke in der Chat-Liste auf einen Kontakt um den Chat zu öffnen. Tippe deine Nachricht in das Eingabefeld unten und drücke <span class="kbd">Enter</span> oder den goldenen Sende-Button.</p>
+
+      <h3 class="section-title">Was du alles senden kannst</h3>
+      <div class="feature-grid">
+        <div class="feature-card"><div class="feature-card-icon">✍️</div><h4>Text</h4><p>Normaler Text mit Markdown-Unterstützung: **fett**, *kursiv*, `Code`.</p></div>
+        <div class="feature-card"><div class="feature-card-icon">📎</div><h4>Dateien</h4><p>Bilder, Videos, Dokumente bis 50 MB. Klicke auf "Datei (max. 50 MB)".</p></div>
+        <div class="feature-card"><div class="feature-card-icon">🎤</div><h4>Sprachnachrichten</h4><p>Halte das Mikrofon-Symbol gedrückt und sprich. Loslassen zum Senden.</p></div>
+        <div class="feature-card"><div class="feature-card-icon">😂</div><h4>GIFs & Emojis</h4><p>GIF-Picker und Emoji-Picker per Klick auf die entsprechenden Symbole.</p></div>
+        <div class="feature-card"><div class="feature-card-icon">👁️</div><h4>Einmal-Ansehen</h4><p>Fotos die sich nach dem Öffnen automatisch löschen. Klicke auf das Auge-Symbol.</p></div>
+        <div class="feature-card"><div class="feature-card-icon">⏰</div><h4>Mit Timer</h4><p>Nachrichten die sich nach einer Zeit automatisch löschen (30s bis 7 Tage).</p></div>
+      </div>
+
+      <h3 class="section-title">Nachrichten bearbeiten & löschen</h3>
+      <p>Fahre mit der Maus über eine eigene Nachricht. Es erscheinen Aktions-Buttons:</p>
+      <table>
+        <tr><th>Aktion</th><th>Was passiert</th></tr>
+        <tr><td><strong>✏️ Bearbeiten</strong></td><td>Ändere den Text. Der Empfänger sieht "(bearbeitet)".</td></tr>
+        <tr><td><strong>🗑️ Löschen</strong></td><td>Löscht die Nachricht bei allen. Ersetzt durch "Nachricht gelöscht".</td></tr>
+        <tr><td><strong>↩️ Antworten</strong></td><td>Zitiert die Nachricht und öffnet das Eingabefeld.</td></tr>
+        <tr><td><strong>➡️ Weiterleiten</strong></td><td>Schickt die Nachricht in einen anderen Chat.</td></tr>
+        <tr><td><strong>📌 Anpinnen</strong></td><td>Pinnt die Nachricht oben im Chat an (max. 5 pro Chat).</td></tr>
+      </table>
+
+      <h3 class="section-title">Reaktionen</h3>
+      <p>Fahre über eine Nachricht und klicke auf das Emoji-Symbol um mit einem Emoji zu reagieren. Die Reaktion ist für alle sichtbar.</p>
+
+      <h3 class="section-title">Lesebestätigungen</h3>
+      <p>Ein <strong>einfacher Haken</strong> (✓) bedeutet: gesendet. Ein <strong>doppelter Haken</strong> (✓✓) bedeutet: gelesen. Die Haken erscheinen rechts neben jeder gesendeten Nachricht.</p>
+    </article>
+
+    <!-- ══════ MEDIEN ══════ -->
+    <article id="art-media">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Dateien & Medien</span></div>
+      <h2 class="page-title">📎 Dateien & Medien</h2>
+      <p class="page-subtitle">Bilder, Videos, Dokumente und Sprachnachrichten teilen.</p>
+
+      <h3 class="section-title">Dateien senden</h3>
+      <p>Klicke im Chat-Eingabebereich auf <strong>"Datei (max. 50 MB)"</strong>. Es öffnet sich ein Datei-Dialog wo du die Datei auswählen kannst.</p>
+      <p>Unterstützte Formate: Bilder (JPG, PNG, GIF, WebP), Videos (MP4, WebM), Dokumente (PDF, DOCX, etc.), Audio (MP3, OGG, WAV).</p>
+
+      <div class="info-box tip"><span class="info-icon">✅</span><div class="info-text"><strong>Tipp:</strong>Du kannst Bilder auch einfach direkt in das Chat-Fenster ziehen und fallen lassen (Drag & Drop).</div></div>
+
+      <h3 class="section-title">Sprachnachrichten</h3>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body"><h4>Mikrofon-Button drücken</h4><p>Klicke auf das 🎤 Symbol im Eingabebereich. Dein Browser fragt nach der Mikrofon-Erlaubnis – bestätige das.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body"><h4>Sprechen</h4><p>Sprich deine Nachricht. Du siehst einen Timer der die Länge anzeigt.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body"><h4>Senden oder Abbrechen</h4><p>Klicke nochmal auf den Button zum Stoppen. Die Aufnahme wird automatisch gesendet.</p></div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Sprachnachricht abspielen</h3>
+      <p>Empfangene Sprachnachrichten haben einen eingebauten Player mit:</p>
+      <ul style="padding-left:20px;margin-bottom:16px">
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">▶️ <strong style="color:var(--txt)">Play/Pause</strong> Button</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">📊 <strong style="color:var(--txt)">Klickbarer Wellenform</strong> – springe zu beliebiger Stelle</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">🏃 <strong style="color:var(--txt)">Geschwindigkeit</strong>: 1× → 1.5× → 2× per Klick</li>
+      </ul>
+
+      <h3 class="section-title">Einmal-Ansehen Medien</h3>
+      <p>Klicke auf das 👁️ Auge-Symbol beim Datei-Upload um ein Foto als "Einmal-Ansehen" zu senden. Der Empfänger sieht das Bild unscharf und muss antippen – danach wird es automatisch vom Server gelöscht.</p>
+      <p>Mehr dazu: <a onclick="show('viewonce')" style="color:var(--amb2);cursor:pointer">👁️ Einmal-Ansehen</a>.</p>
+    </article>
+
+    <!-- ══════ GRUPPEN ══════ -->
+    <article id="art-groups">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Gruppen</span></div>
+      <h2 class="page-title">👥 Gruppen</h2>
+      <p class="page-subtitle">Chatte mit mehreren Leuten gleichzeitig in Gruppenkonversationen.</p>
+
+      <h3 class="section-title">Gruppe erstellen</h3>
+      <p>Klicke unten in der Chat-Liste auf <strong>"+ Gruppe"</strong>. Gib einen Gruppennamen ein und füge Mitglieder hinzu. Fertig!</p>
+
+      <h3 class="section-title">Gruppen-Einstellungen</h3>
+      <p>Als Gruppen-Admin kannst du die Gruppe konfigurieren. Klicke auf das ⚙️ Symbol im Chat-Header:</p>
+      <table>
+        <tr><th>Einstellung</th><th>Was sie macht</th></tr>
+        <tr><td><strong>🌐 Öffentlich</strong></td><td>Jeder mit dem Einladungslink kann beitreten</td></tr>
+        <tr><td><strong>🛡️ Admin-Only</strong></td><td>Nur Admins dürfen Nachrichten schreiben – andere können nur lesen</td></tr>
+        <tr><td><strong>✋ Beitritt bestätigen</strong></td><td>Neue Mitglieder müssen erst vom Admin genehmigt werden</td></tr>
+        <tr><td><strong>🐌 Slow Mode</strong></td><td>Jeder Nutzer kann nur alle X Sekunden schreiben (10s bis 1h)</td></tr>
+        <tr><td><strong>👥 Max. Mitglieder</strong></td><td>Begrenze die Gruppengröße auf maximal 500 Personen</td></tr>
+      </table>
+
+      <h3 class="section-title">Mitglieder verwalten</h3>
+      <p>Im Tab "Mitglieder" kannst du als Admin:</p>
+      <ul style="padding-left:20px;margin-bottom:16px">
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">➕ Neue Mitglieder per Nutzernamen/UIN hinzufügen</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">⭐ Mitglieder zum Admin befördern</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">🔇 Mitglieder stummschalten (5 Min bis 7 Tage)</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">✕ Mitglieder aus der Gruppe entfernen</li>
+      </ul>
+
+      <h3 class="section-title">Einladungslink & QR-Code</h3>
+      <p>Bei öffentlichen Gruppen wird automatisch ein Einladungslink generiert. Du findest ihn in den Gruppeneinstellungen. Du kannst auch einen QR-Code exportieren und teilen.</p>
+
+      <h3 class="section-title">Voice Channels in Gruppen</h3>
+      <p>Jede Gruppe hat einen integrierten Voice Channel. Klicke auf 🔊 im Chat-Header um ihn zu öffnen und "Beitreten" um mitzumachen.</p>
+      <p>Mehr dazu: <a onclick="show('voice')" style="color:var(--amb2);cursor:pointer">🔊 Voice Channels</a>.</p>
+    </article>
+
+    <!-- ══════ CHANNELS ══════ -->
+    <article id="art-channels">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Channels</span></div>
+      <h2 class="page-title">📡 Channels</h2>
+      <p class="page-subtitle">Channels sind öffentliche Broadcast-Kanäle – ähnlich wie bei Telegram.</p>
+
+      <h3 class="section-title">Was ist ein Channel?</h3>
+      <p>Ein Channel ist ein Broadcast-Kanal. Der Ersteller (oder Admins) können Nachrichten senden – alle Abonnenten können lesen aber nicht antworten. Perfekt für Ankündigungen, News oder Communities.</p>
+
+      <h3 class="section-title">Channel abonnieren</h3>
+      <p>In der linken Navigation unter "Channels" findest du öffentliche Channels. Klicke auf einen Channel und dann auf "Abonnieren". Er erscheint dann in deiner Chat-Liste unter dem Filter "Channels".</p>
+
+      <h3 class="section-title">Channel erstellen</h3>
+      <p>Klicke auf "+ Channel erstellen" in der Navigation. Wähle Namen, Beschreibung und ob der Channel öffentlich oder privat sein soll.</p>
+
+      <div class="info-box info"><span class="info-icon">ℹ️</span><div class="info-text"><strong>Nokki News</strong> ist der offizielle Channel mit Updates, neuen Features und Wartungsmeldungen. Empfohlen zu abonnieren!</div></div>
+    </article>
+
+    <!-- ══════ VOICE ══════ -->
+    <article id="art-voice">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Voice Channels</span></div>
+      <h2 class="page-title">🔊 Voice Channels</h2>
+      <p class="page-subtitle">Sprich mit mehreren Leuten gleichzeitig direkt in einer Gruppe – wie bei Discord.</p>
+
+      <h3 class="section-title">Was ist ein Voice Channel?</h3>
+      <p>Jede Gruppe in Nokki hat einen eingebauten Voice Channel. Das ist ein Sprachraum dem mehrere Personen gleichzeitig beitreten und miteinander reden können – ohne dass jemand angerufen werden muss.</p>
+
+      <div class="info-box tip"><span class="info-icon">✅</span><div class="info-text"><strong>Hinweis:</strong>Voice Channels funktionieren nur über HTTPS (also auf lumestack.de) und benötigen die Erlaubnis für das Mikrofon im Browser.</div></div>
+
+      <h3 class="section-title">Voice Channel beitreten</h3>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body"><h4>Gruppe öffnen</h4><p>Öffne eine Gruppenkonversation. Oben im Chat-Header siehst du das 🔊 Symbol.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body"><h4>Voice Panel öffnen</h4><p>Klicke auf 🔊 – es öffnet sich das Voice-Panel unter dem Header mit dem "Beitreten" Button.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body"><h4>Mikrofon erlauben</h4><p>Dein Browser fragt ob Nokki das Mikrofon verwenden darf. Klicke auf "Erlauben".</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body"><h4>Du bist drin!</h4><p>Du siehst die Teilnehmerliste. Das Panel wechselt auf das aktive Voice-Interface mit Mute-Button und Verlassen-Button.</p></div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Im Voice Channel</h3>
+      <table>
+        <tr><th>Button</th><th>Funktion</th></tr>
+        <tr><td>🎤 <strong>Aktiv</strong></td><td>Dein Mikrofon ist an – andere hören dich</td></tr>
+        <tr><td>🔇 <strong>Stumm</strong></td><td>Dein Mikrofon ist aus – du hörst aber noch zu</td></tr>
+        <tr><td>▼ / ▲</td><td>Teilnehmerliste ein-/ausklappen</td></tr>
+        <tr><td>📵 <strong>Verlassen</strong></td><td>Du verlässt den Voice Channel</td></tr>
+      </table>
+
+      <div class="info-box warning"><span class="info-icon">⚠️</span><div class="info-text"><strong>Wichtig:</strong>Voice Channels funktionieren NICHT wenn dein Browser das Mikrofon blockiert hat (z.B. in der Schule oder Firma). Prüfe die Browser-Einstellungen.</div></div>
+    </article>
+
+    <!-- ══════ ANRUFE ══════ -->
+    <article id="art-calls">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Anrufe</span></div>
+      <h2 class="page-title">📞 Anrufe</h2>
+      <p class="page-subtitle">1:1 Video- und Audioanrufe direkt im Chat.</p>
+
+      <h3 class="section-title">Anruf starten</h3>
+      <p>Öffne einen Direkt-Chat und klicke auf das Telefon-Symbol oben rechts im Header. Du kannst zwischen Audioanruf (🎤) und Videoanruf (📹) wählen.</p>
+      <p>Der Empfänger bekommt eine Benachrichtigung und kann den Anruf annehmen oder ablehnen.</p>
+
+      <h3 class="section-title">Technischer Hintergrund</h3>
+      <p>Nokki-Anrufe nutzen <strong>WebRTC</strong> – das ist eine direkte Verbindung zwischen zwei Browsern (P2P). Das bedeutet: Das Gespräch läuft <strong>nicht</strong> über unsere Server, sondern direkt zwischen euch. Maximale Privatsphäre.</p>
+
+      <div class="info-box info"><span class="info-icon">ℹ️</span><div class="info-text"><strong>Für Gruppenanrufe</strong> nutze den Voice Channel der Gruppe – er unterstützt beliebig viele Teilnehmer gleichzeitig.</div></div>
+    </article>
+
+    <!-- ══════ IDENTITIES ══════ -->
+    <article id="art-identities">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Multi-Identity</span></div>
+      <h2 class="page-title">🎭 Multi-Identity System</h2>
+      <p class="page-subtitle">Das Herzstück von Nokki – eine App, drei komplett getrennte Leben.</p>
+
+      <h3 class="section-title">Was sind Identitäten?</h3>
+      <p>Stell dir vor du hast drei verschiedene Handys: eines für Freunde und Familie, eines für die Arbeit und eines das niemand kennt. Bei Nokki hast du das alles in <strong>einer App</strong> – durch das Identity-System.</p>
+      <p>Jede Identität hat:</p>
+      <ul style="padding-left:20px;margin-bottom:16px">
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Eigene <strong style="color:var(--txt)">Kontakte</strong> die die anderen Identitäten nicht sehen</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Eigene <strong style="color:var(--txt)">Chats und Gruppen</strong></li>
+        <li style="padding:4px 0;color:var(--txt);font-size:14.5px">Eigenen <strong style="color:var(--txt)">Profilnamen</strong> und Avatar</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Eigene <strong style="color:var(--txt)">Einstellungen</strong></li>
+      </ul>
+
+      <div class="feature-grid">
+        <div class="feature-card" style="border-color:rgba(59,130,246,.2)">
+          <div class="feature-card-icon">🧍</div>
+          <h4>Privat-Identität</h4>
+          <p>Für Freunde und Familie. Alle Features verfügbar: Gruppen, Calls, Status, Dateien.</p>
+          <span class="tag blue">Standard</span>
+        </div>
+        <div class="feature-card" style="border-color:rgba(139,92,246,.2)">
+          <div class="feature-card-icon">🧑‍💼</div>
+          <h4>Arbeits-Identität</h4>
+          <p>Für Kunden und Kollegen. Mit Auto-Antwort, Erreichbarkeitszeiten und professionellem Status.</p>
+          <span class="tag purple">Professionell</span>
+        </div>
+        <div class="feature-card" style="border-color:rgba(107,114,128,.2)">
+          <div class="feature-card-icon">🕶️</div>
+          <h4>Anonym-Identität</h4>
+          <p>Kein Bezug zu deinem echten Account. Maximale Privatsphäre, limitierte neue Chats pro Tag.</p>
+          <span class="tag gray">Anonym</span>
+        </div>
+      </div>
+
+      <h3 class="section-title">Zwischen Identitäten wechseln</h3>
+      <p>Oben links in der App siehst du deinen Avatar. Klicke darauf um den <strong>Identity-Switcher</strong> zu öffnen. Wähle die gewünschte Identität – der Wechsel passiert sofort ohne Neustart.</p>
+      <p>Alle deine Identitäten bleiben im Hintergrund <strong>online</strong> und empfangen Nachrichten – auch wenn du gerade eine andere Identität aktiv hast.</p>
+
+      <div class="info-box tip"><span class="info-icon">✅</span><div class="info-text"><strong>Sicherheit:</strong>Die Identitäten sind serverseitig getrennt. Es ist technisch unmöglich dass jemand von einer Identität auf die Daten einer anderen zugreift.</div></div>
+    </article>
+
+    <!-- ══════ STATUS ══════ -->
+    <article id="art-status">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Status & Stories</span></div>
+      <h2 class="page-title">📸 Status & Stories</h2>
+      <p class="page-subtitle">Teile Momente mit deinen Kontakten – automatisch nach 24 Stunden gelöscht.</p>
+
+      <h3 class="section-title">Was sind Status-Stories?</h3>
+      <p>Status-Stories sind kurze Beiträge (Bild, Video oder Text) die du mit deinen Kontakten teilst. Sie werden automatisch nach <strong>24 Stunden gelöscht</strong>. Ähnlich wie Instagram Stories oder WhatsApp Status.</p>
+
+      <h3 class="section-title">Status posten</h3>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body"><h4>Auf "+" klicken</h4><p>In der Chat-Liste siehst du oben die Status-Kreise. Klicke auf deinen eigenen Kreis mit "+" oder "Neu".</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body"><h4>Typ wählen</h4><p>Wähle zwischen: <strong>Bild</strong>, <strong>Video</strong> (max. 60 Sekunden) oder <strong>Text</strong> mit Hintergrundfarbe.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body"><h4>Teilen</h4><p>Klicke auf "Status teilen". Dein Status ist sofort für alle deine Kontakte sichtbar.</p></div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Status ansehen</h3>
+      <p>Status von Kontakten siehst du als <strong>farbige Kreise</strong> über der Chat-Liste. Ein <strong>goldener Ring</strong> = ungesehen. Ein <strong>grauer Ring</strong> = bereits gesehen. Klicke auf einen Kreis um den Status anzuschauen.</p>
+      <p>Im Viewer siehst du oben einen Fortschrittsbalken – jeder Status läuft 5 Sekunden. Du kannst links/rechts klicken um zu springen.</p>
+
+      <h3 class="section-title">Status löschen</h3>
+      <p>Öffne deinen eigenen Status und klicke auf "🗑️ Löschen". Status werden sonst automatisch nach 24 Stunden gelöscht.</p>
+    </article>
+
+    <!-- ══════ VIEW ONCE ══════ -->
+    <article id="art-viewonce">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Einmal-Ansehen</span></div>
+      <h2 class="page-title">👁️ Einmal-Ansehen Medien</h2>
+      <p class="page-subtitle">Fotos und Videos die sich nach dem ersten Öffnen automatisch für immer löschen.</p>
+
+      <h3 class="section-title">Wie funktioniert Einmal-Ansehen?</h3>
+      <p>Wenn du ein Foto als "Einmal-Ansehen" sendest, passiert folgendes:</p>
+      <ul style="padding-left:20px;margin-bottom:16px">
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Der Empfänger sieht das Bild <strong style="color:var(--txt)">unscharf (gebluret)</strong> mit dem Text "Tippen zum Ansehen"</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Nach dem Antippen wird das Bild kurz gezeigt</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Danach wird die Datei <strong style="color:var(--txt)">vom Server gelöscht</strong> – für immer</li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Die Nachricht zeigt dann "Einmal angesehen" an</li>
+      </ul>
+
+      <h3 class="section-title">Einmal-Ansehen Foto senden</h3>
+      <p>Klicke im Chat auf das <strong>👁️ Auge-Symbol</strong> in der Toolbar. Wähle dein Foto aus. Das Foto wird automatisch als "Einmal-Ansehen" markiert und gesendet.</p>
+
+      <div class="info-box warning"><span class="info-icon">⚠️</span><div class="info-text"><strong>Wichtig:</strong>Einmal-Ansehen verhindert nicht dass jemand mit einem anderen Gerät ein Foto macht. Für echte Sicherheit kombiniere es mit der Screenshot-Sperre.</div></div>
+
+      <h3 class="section-title">Als Absender</h3>
+      <p>Du siehst das gesendete Foto mit einem Auge-Badge. Solange der Empfänger es noch nicht geöffnet hat, siehst du es ebenfalls unscharf. Nach dem Öffnen zeigt die Nachricht "Einmal angesehen" an.</p>
+    </article>
+
+    <!-- ══════ TIMER ══════ -->
+    <article id="art-timer">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Zeitgesteuerte Nachrichten</span></div>
+      <h2 class="page-title">⏰ Zeitgesteuerte Nachrichten</h2>
+      <p class="page-subtitle">Nachrichten die sich automatisch nach einer Zeit selbst löschen.</p>
+
+      <h3 class="section-title">Selbst-zerstörende Nachrichten</h3>
+      <p>Du kannst jede Nachricht mit einem Timer versehen. Nach Ablauf der Zeit wird die Nachricht <strong>bei allen Beteiligten</strong> automatisch gelöscht – auch wenn du offline bist.</p>
+
+      <h4 class="sub-title">Timer einstellen</h4>
+      <p>Klicke im Chat-Eingabebereich auf das <strong>"∞ Kein Timer"</strong> Dropdown und wähle eine Zeit:</p>
+      <p>
+        <span class="tag gray">30 Sek</span>
+        <span class="tag gray">1 Min</span>
+        <span class="tag gray">5 Min</span>
+        <span class="tag gray">1 Stunde</span>
+        <span class="tag gray">1 Tag</span>
+        <span class="tag gray">7 Tage</span>
+      </p>
+      <p>Nach der Auswahl wird der Timer auf alle folgenden Nachrichten angewendet bis du ihn wieder auf "∞ Kein Timer" zurückstellst.</p>
+
+      <h3 class="section-title">Geplante Nachrichten</h3>
+      <p>Du kannst Nachrichten für einen bestimmten Zeitpunkt in der Zukunft planen. Klicke auf das ⏰ Symbol und wähle Datum und Uhrzeit. Die Nachricht wird automatisch zum gewählten Zeitpunkt gesendet – auch wenn du gerade nicht online bist.</p>
+    </article>
+
+    <!-- ══════ ZEITKAPSEL ══════ -->
+    <article id="art-capsule">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Zeitkapsel</span></div>
+      <h2 class="page-title">⌛ Zeitkapsel-Nachrichten</h2>
+      <p class="page-subtitle">Nachrichten die erst in Wochen, Monaten oder Jahren zugestellt werden.</p>
+
+      <h3 class="section-title">Was ist eine Zeitkapsel?</h3>
+      <p>Eine Zeitkapsel-Nachricht ist eine besondere Art der geplanten Nachricht. Du schreibst eine Nachricht und wählst einen Zeitpunkt weit in der Zukunft – z.B. "in einem Jahr". Die Nachricht wird erst dann zugestellt.</p>
+      <p>Perfekt für: Geburtstagsüberraschungen, Erinnerungen an wichtige Ereignisse, oder einfach weil man jemandem eine besondere Überraschung bereiten möchte.</p>
+
+      <h3 class="section-title">Zeitkapsel erstellen</h3>
+      <p>Klicke im Chat auf das ⌛ Symbol. Es öffnet sich ein Dialog mit Schnellauswahl-Buttons (in 1 Stunde, morgen, in 3 Tagen, in 1 Woche, in 1 Monat, in 1 Jahr) oder einem genauen Datum/Uhrzeit-Picker.</p>
+
+      <div class="info-box tip"><span class="info-icon">✅</span><div class="info-text"><strong>Tipp:</strong>Die Nachricht wird dir gelb angezeigt mit der Info wann sie zugestellt wird. Du kannst sie bis zur Zustellung noch löschen.</div></div>
+    </article>
+
+    <!-- ══════ E2E ══════ -->
+    <article id="art-e2e">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Verschlüsselung</span></div>
+      <h2 class="page-title">🔒 Verschlüsselung</h2>
+      <p class="page-subtitle">Aktueller Stand des Nachrichtenschutzes.</p>
+
+      <h3 class="section-title">Was ist E2E-Verschlüsselung?</h3>
+      <p>Ende-zu-Ende (E2E) würde bedeuten, dass nur die Gesprächsteilnehmer Nachrichten entschlüsseln können. Nokki unterstützt dies derzeit noch nicht produktiv. Nachrichten werden über TLS übertragen, liegen auf dem Server aber lesbar vor.</p>
+
+      <div class="info-box danger"><span class="info-icon">⚠️</span><div class="info-text"><strong>Wichtig:</strong>Verlasse dich bei vertraulichen Inhalten noch nicht auf Ende-zu-Ende-Verschlüsselung. Die frühere experimentelle Schlüssel-Funktion ist deaktiviert, bis Gerätewechsel, Gruppen und eine unabhängige Prüfung sicher umgesetzt sind.</div></div>
+
+      <h3 class="section-title">Was bereits geschützt ist</h3>
+      <p>TLS schützt die Übertragung, zeitlich begrenzte Sitzungen schützen Kontozugriffe und serverseitige Berechtigungsprüfungen verhindern den Zugriff auf fremde Unterhaltungen.</p>
+    </article>
+
+    <!-- ══════ SCREENSHOT ══════ -->
+    <article id="art-screenshot">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Screenshot-Sperre</span></div>
+      <h2 class="page-title">🛡️ Screenshot-Sperre</h2>
+      <p class="page-subtitle">Verhindere das Kopieren von Chatinhalten.</p>
+
+      <h3 class="section-title">Was macht die Screenshot-Sperre?</h3>
+      <p>Wenn du die Screenshot-Sperre für einen Chat aktivierst:</p>
+      <ul style="padding-left:20px;margin-bottom:16px">
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Text in diesem Chat kann <strong style="color:var(--txt)">nicht mehr markiert oder kopiert</strong> werden</li>
+        <li style="padding:4px 0;color:var(--txt);font-size:14.5px">Screenshot-APIs des Browsers werden <strong style="color:var(--txt)">blockiert</strong></li>
+        <li style="padding:4px 0;color:var(--mut);font-size:14.5px">Die Einstellung gilt <strong style="color:var(--txt)">für alle Teilnehmer</strong> dieses Chats</li>
+      </ul>
+
+      <h3 class="section-title">Screenshot-Sperre aktivieren</h3>
+      <p>Klicke im Chat-Header auf das 📷 Symbol. Es wechselt zu 🛡️ (rot hinterlegt) wenn die Sperre aktiv ist. Ein weiterer Klick deaktiviert sie wieder.</p>
+
+      <div class="info-box warning"><span class="info-icon">⚠️</span><div class="info-text"><strong>Einschränkung:</strong>Die Screenshot-Sperre verhindert digitales Kopieren im Browser. Sie kann nicht verhindern dass jemand mit einem zweiten Gerät (z.B. Kamera) ein Foto vom Bildschirm macht.</div></div>
+    </article>
+
+    <!-- ══════ FAKE PIN ══════ -->
+    <article id="art-fakepin">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Fake-PIN</span></div>
+      <h2 class="page-title">🎭 Fake-PIN / Schein-Account</h2>
+      <p class="page-subtitle">Zeige bei Druck einen leeren Account – deine echten Chats bleiben unsichtbar.</p>
+
+      <h3 class="section-title">Wofür ist der Fake-PIN?</h3>
+      <p>Stell dir vor jemand zwingt dich dein Handy zu entsperren. Mit dem Fake-PIN loggst du dich in einen <strong>komplett leeren Account</strong> ein – keine Chats, keine Kontakte, kein Hinweis dass da noch etwas dahinter steckt. Dein echter Account bleibt sicher.</p>
+
+      <h3 class="section-title">Fake-PIN einrichten</h3>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body"><h4>Settings öffnen</h4><p>Gehe zu Settings → Tab "🎭 Fake-PIN".</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body"><h4>Fake-PIN wählen</h4><p>Gib einen 4–8-stelligen PIN ein. <strong>Verwende nicht denselben wie dein echtes Passwort!</strong></p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body"><h4>Schein-Account konfigurieren</h4><p>Optional: Gib einen anderen Namen und eine Fake-Status-Nachricht ein die im Schein-Account angezeigt wird.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body"><h4>Speichern</h4><p>Klicke auf "🎭 Fake-PIN speichern". Ab jetzt funktioniert der Fake-Login.</p></div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Fake-Login benutzen</h3>
+      <p>Gehe zu <strong>lumestack.de/login</strong> und gib statt deines echten Passworts den <strong>Fake-PIN</strong> ein. Du wirst in den Schein-Account eingeloggt – komplett leer, mit dem Fake-Namen den du konfiguriert hast.</p>
+
+      <div class="info-box tip"><span class="info-icon">✅</span><div class="info-text"><strong>Tipp:</strong>Der Schein-Account sieht aus wie ein echter leerer Account. Niemand kann von außen erkennen dass da noch etwas dahinter steckt.</div></div>
+
+      <div class="info-box danger"><span class="info-icon">⚠️</span><div class="info-text"><strong>Wichtig:</strong>Vergiss deinen echten Fake-PIN nicht! Und verwende keinen Fake-PIN der deinem echten Passwort ähnelt.</div></div>
+    </article>
+
+    <!-- ══════ 2FA ══════ -->
+    <article id="art-2fa">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Zwei-Faktor-Auth</span></div>
+      <h2 class="page-title">🔐 Zwei-Faktor-Authentifizierung</h2>
+      <p class="page-subtitle">Ein zusätzlicher Schutz für deinen Account.</p>
+
+      <h3 class="section-title">Was ist 2FA?</h3>
+      <p>Zwei-Faktor-Authentifizierung (2FA) bedeutet: Beim Login brauchst du nicht nur dein Passwort, sondern auch einen <strong>6-stelligen Code</strong> der sich alle 30 Sekunden ändert. Selbst wenn jemand dein Passwort stiehlt, kommt er ohne diesen Code nicht rein.</p>
+
+      <h3 class="section-title">2FA aktivieren</h3>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body"><h4>Authenticator-App installieren</h4><p>Du brauchst eine Authenticator-App auf deinem Handy. Empfohlen: <strong>Google Authenticator</strong>, <strong>Authy</strong> oder <strong>Microsoft Authenticator</strong>.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body"><h4>Settings öffnen</h4><p>Gehe zu Settings → Tab "🔐 2FA".</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body"><h4>QR-Code scannen</h4><p>Scanne den angezeigten QR-Code mit deiner Authenticator-App.</p></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body"><h4>Code bestätigen</h4><p>Gib den 6-stelligen Code aus der App ein um 2FA zu aktivieren.</p></div>
+        </div>
+      </div>
+
+      <div class="info-box warning"><span class="info-icon">⚠️</span><div class="info-text"><strong>Backup-Codes sichern!</strong>Bei der Aktivierung bekommst du Backup-Codes. Speichere diese sicher ab – wenn du dein Handy verlierst, kannst du damit trotzdem noch rein.</div></div>
+    </article>
+
+    <!-- ══════ DATENSCHUTZ ══════ -->
+    <article id="art-privacy">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Datenschutz-Einstellungen</span></div>
+      <h2 class="page-title">👤 Datenschutz-Einstellungen</h2>
+      <p class="page-subtitle">Kontrolliere wer was über dich sehen kann.</p>
+
+      <h3 class="section-title">Was du einstellen kannst</h3>
+      <table>
+        <tr><th>Einstellung</th><th>Optionen</th><th>Bedeutung</th></tr>
+        <tr><td><strong>Online-Status</strong></td><td>Alle / Kontakte / Niemand</td><td>Wer sieht ob du online bist</td></tr>
+        <tr><td><strong>Zuletzt gesehen</strong></td><td>Alle / Kontakte / Niemand</td><td>Wer sieht wann du zuletzt aktiv warst</td></tr>
+        <tr><td><strong>Profilbild</strong></td><td>Alle / Kontakte / Niemand</td><td>Wer kann dein Profilbild sehen</td></tr>
+      </table>
+
+      <h3 class="section-title">Kontakte blockieren</h3>
+      <p>Du kannst jeden Kontakt blockieren. Gehe zum Profil des Nutzers und klicke auf "Blockieren". Geblockte Nutzer können dir keine Nachrichten mehr senden und sehen nicht ob du online bist.</p>
+
+      <h3 class="section-title">Account löschen</h3>
+      <p>Gehe zu Settings → "⚙️ Konto" → "Konto löschen". Du musst dein Passwort zur Bestätigung eingeben. Alle deine Daten werden <strong>permanent und unwiderruflich</strong> gelöscht (DSGVO Art. 17).</p>
+    </article>
+
+    <!-- ══════ PROFIL ══════ -->
+    <article id="art-profile">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Profil bearbeiten</span></div>
+      <h2 class="page-title">✏️ Profil bearbeiten</h2>
+      <p class="page-subtitle">Passe dein Nokki-Profil an.</p>
+
+      <h3 class="section-title">Was kannst du bearbeiten?</h3>
+      <table>
+        <tr><th>Feld</th><th>Beschreibung</th></tr>
+        <tr><td><strong>Profilbild</strong></td><td>JPG oder PNG, max. 5 MB</td></tr>
+        <tr><td><strong>Nutzername</strong></td><td>1–30 Zeichen, kann geändert werden</td></tr>
+        <tr><td><strong>Bio</strong></td><td>Kurze Beschreibung, max. 200 Zeichen</td></tr>
+        <tr><td><strong>Status-Nachricht</strong></td><td>Was unter deinem Namen angezeigt wird</td></tr>
+        <tr><td><strong>Online-Status</strong></td><td>Online / Abwesend / Offline</td></tr>
+      </table>
+
+      <h3 class="section-title">Profil öffnen</h3>
+      <p>Klicke auf deinen Avatar oben links oder gehe zu <strong>Settings → "✏️ Profil"</strong>.</p>
+    </article>
+
+    <!-- ══════ BENACHRICHTIGUNGEN ══════ -->
+    <article id="art-notifications">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Benachrichtigungen</span></div>
+      <h2 class="page-title">🔔 Benachrichtigungen</h2>
+      <p class="page-subtitle">Bleib informiert ohne gestört zu werden.</p>
+
+      <h3 class="section-title">Browser-Benachrichtigungen erlauben</h3>
+      <p>Wenn du das erste Mal eine Nachricht bekommst, fragt der Browser ob Nokki Benachrichtigungen senden darf. Klicke auf "Erlauben" um Desktop-Notifications zu erhalten – auch wenn der Tab im Hintergrund ist.</p>
+
+      <h3 class="section-title">Sounds</h3>
+      <p>Nokki spielt einen kurzen Ping-Sound wenn eine neue Nachricht ankommt. Du kannst Sounds unter <strong>Settings → "🔊 Sounds"</strong> anpassen oder deaktivieren.</p>
+
+      <div class="info-box tip"><span class="info-icon">✅</span><div class="info-text"><strong>Tipp:</strong>Der klassische ICQ "Uh-Oh!" Sound ist als Option verfügbar – für alle die nostalgisch werden wollen.</div></div>
+    </article>
+
+    <!-- ══════ THEMES ══════ -->
+    <article id="art-themes">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Design & Themes</span></div>
+      <h2 class="page-title">🎨 Design & Themes</h2>
+      <p class="page-subtitle">Passe das Aussehen der App nach deinen Wünschen an.</p>
+
+      <h3 class="section-title">Farbthemen</h3>
+      <p>Unter <strong>Settings → "🎨 Design"</strong> kannst du zwischen verschiedenen Farbthemen wählen:</p>
+      <p>
+        <span class="tag amber">🌙 Dunkel (Standard)</span>
+        <span class="tag blue">💙 Midnight</span>
+        <span class="tag green">🌿 Wald</span>
+        <span class="tag gray">🌊 Ozean</span>
+      </p>
+
+      <h3 class="section-title">Chat-Hintergrund</h3>
+      <p>Du kannst für jeden Chat individuell einen Hintergrund wählen. Klicke im Chat-Header auf ⚙️ → "Hintergrund".</p>
+
+      <h3 class="section-title">Schriftgröße</h3>
+      <p>Unter Settings kannst du die Schriftgröße für Nachrichten anpassen: Klein, Normal oder Groß.</p>
+    </article>
+
+    <!-- ══════ KONTO ══════ -->
+    <article id="art-account">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Konto verwalten</span></div>
+      <h2 class="page-title">⚙️ Konto verwalten</h2>
+      <p class="page-subtitle">Passwort ändern, E-Mail ändern und Account löschen.</p>
+
+      <h3 class="section-title">Passwort ändern</h3>
+      <p>Settings → "🔑 Passwort" → Aktuelles Passwort eingeben → Neues Passwort setzen.</p>
+
+      <h3 class="section-title">E-Mail ändern</h3>
+      <p>Settings → "✏️ Profil" → E-Mail-Adresse aktualisieren. Du bekommst eine Bestätigungsmail an die neue Adresse.</p>
+
+      <h3 class="section-title">Chat-Export</h3>
+      <p>Im Chat-Header klicke auf das Export-Symbol um einen Chat als <strong>TXT oder JSON</strong> herunterzuladen.</p>
+
+      <h3 class="section-title">Account löschen</h3>
+      <p>Settings → "⚙️ Konto" → "🗑️ Account löschen". Du musst dein Passwort eingeben um zu bestätigen.</p>
+      <div class="info-box danger"><span class="info-icon">⚠️</span><div class="info-text"><strong>Achtung: Unwiderruflich!</strong>Das Löschen deines Accounts löscht alle Daten permanent. Das kann nicht rückgängig gemacht werden.</div></div>
+    </article>
+
+    <!-- ══════ FAQ ══════ -->
+    <article id="art-faq">
+      <div class="breadcrumb"><a onclick="show('start')">Wiki</a> › <span>Häufige Fragen</span></div>
+      <h2 class="page-title">❓ Häufige Fragen</h2>
+      <p class="page-subtitle">Die wichtigsten Antworten auf einen Blick.</p>
+
+      <h3 class="section-title">Allgemein</h3>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Ist Nokki wirklich kostenlos? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Ja, komplett kostenlos. Alle Features sind ohne Bezahlung verfügbar. Kein Abo, keine Premium-Tiers, keine versteckten Kosten.</p>
+      </details>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Warum brauche ich keine Handynummer? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Nokki identifiziert dich über eine UIN (Nummer) und E-Mail – nicht über deine Handynummer. Das schützt deine Privatsphäre weil deine Telefonnummer niemals gespeichert wird.</p>
+      </details>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Wo stehen meine Daten? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Nokki wird auf eigener Infrastruktur in Deutschland betrieben. Details zu Verarbeitung, Dienstleistern und deinen Rechten findest du in der Datenschutzerklärung.</p>
+      </details>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Gibt es eine App zum Herunterladen? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Aktuell läuft Nokki als Web App direkt im Browser – kein Download nötig. Native iOS & Android Apps sind in Planung für 2026. Du kannst die Web App als PWA auf deinen Homescreen "installieren".</p>
+      </details>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Funktioniert Nokki auf dem Handy? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Ja! Die Web App ist vollständig für mobile Browser optimiert. Öffne einfach lumestack.de im Browser deines Handys.</p>
+      </details>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Wie finde ich Kontakte? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Klicke auf "+ Kontakt" und suche nach dem Nutzernamen oder der UIN deines Kontakts. Du kannst auch deinen Kontakten deine UIN mitteilen – sie finden dich dann genauso.</p>
+      </details>
+
+      <h3 class="section-title">Technisches</h3>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Voice Channel funktioniert nicht – was tun? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Prüfe ob der Browser das Mikrofon blockiert. Klicke auf das Schloss-Symbol in der URL-Leiste und prüfe die Mikrofon-Berechtigung. Manche Netzwerke (Schule, Firma) blockieren Audio-Verbindungen.</p>
+      </details>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Nachrichten kommen nicht an – was tun? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Überprüfe deine Internetverbindung. Prüfe ob der Socket verbunden ist (oben sollte "Socket verbunden" stehen). Lade die Seite einmal neu. Wenn das Problem bleibt, prüfe ob du in der App noch eingeloggt bist.</p>
+      </details>
+      <details style="margin-bottom:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+        <summary style="padding:16px 20px;cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between">Unterstützt Nokki Ende-zu-Ende-Verschlüsselung? <span style="color:var(--amb2)">+</span></summary>
+        <p style="padding:0 20px 16px;border-top:1px solid var(--bdr);padding-top:14px">Noch nicht produktiv. Die Übertragung ist TLS-geschützt, Nachrichten werden derzeit jedoch serverseitig lesbar gespeichert.</p>
+      </details>
+    </article>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Mobile Toggle -->
+<button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+<script>
+// ── Navigation ────────────────────────────────────────────────
+function show(id) {
+  // Alle articles verstecken
+  document.querySelectorAll('article').forEach(a => a.classList.remove('active'))
+  // Gewünschtes anzeigen
+  const art = document.getElementById('art-' + id)
+  if (art) { art.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}) }
+  // Nav-Links updaten
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'))
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if (l.getAttribute('onclick') === `show('${id}')`) l.classList.add('active')
+  })
+  // Mobile Menu schließen
+  document.getElementById('sidebar').classList.remove('open')
+}
+
+// ── Mobile Sidebar ────────────────────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open')
+}
+
+// ── Suche ────────────────────────────────────────────────────
+function searchWiki(q) {
+  if (!q || q.length < 2) return
+  q = q.toLowerCase()
+  const map = {
+    'registrier': 'register', 'anmeld': 'login', 'login': 'login',
+    'passw': 'login', 'nachricht': 'messages', 'senden': 'messages',
+    'datei': 'media', 'bild': 'media', 'voice': 'voice', 'sprach': 'voice',
+    'gruppe': 'groups', 'channel': 'channels', 'identit': 'identities',
+    'status': 'status', 'stories': 'status', 'einmal': 'viewonce',
+    'timer': 'timer', 'zeitkapsel': 'capsule', 'verschlüss': 'e2e',
+    'screenshot': 'screenshot', 'fake': 'fakepin', 'pin': 'fakepin',
+    '2fa': '2fa', 'zwei': '2fa', 'profil': 'profile', 'design': 'themes',
+    'thema': 'themes', 'benach': 'notifications', 'konto': 'account',
+    'faq': 'faq', 'hilfe': 'faq', 'anruf': 'calls', 'sicher': 'e2e',
+  }
+  for (const [key, target] of Object.entries(map)) {
+    if (q.includes(key)) { show(target); document.getElementById('search-input').value = ''; return }
+  }
+}
+
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchWiki(e.target.value)
+})
+
+// ── URL Hash Navigation ───────────────────────────────────────
+if (location.hash) {
+  const id = location.hash.replace('#','')
+  const art = document.getElementById('art-' + id)
+  if (art) show(id)
+}
+</script>
+</body>
+</html>

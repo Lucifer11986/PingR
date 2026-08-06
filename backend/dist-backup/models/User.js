@@ -1,0 +1,60 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
+const mongoose_1 = require("mongoose");
+const UserSchema = new mongoose_1.Schema({
+    uin: { type: String, required: true, unique: true },
+    username: { type: String, required: true, trim: true, minlength: 1, maxlength: 30 },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    password: { type: String, required: true, minlength: 6 },
+    avatar: { type: String },
+    bio: { type: String, maxlength: 200, default: '' },
+    status: { type: String, enum: ['online', 'away', 'offline'], default: 'offline' },
+    statusMessage: { type: String, maxlength: 100 },
+    statusExpiresAt: { type: Date },
+    lastSeen: { type: Date, default: Date.now },
+    lastDevice: { type: String },
+    lastIP: { type: String },
+    blockedUsers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
+    bookmarks: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Message' }],
+    privacyShowStatus: { type: String, enum: ['everyone', 'contacts', 'nobody'], default: 'everyone' },
+    privacyShowLastSeen: { type: String, enum: ['everyone', 'contacts', 'nobody'], default: 'everyone' },
+    privacyShowAvatar: { type: String, enum: ['everyone', 'contacts', 'nobody'], default: 'everyone' },
+    resetToken: { type: String },
+    resetTokenExpires: { type: Date },
+    isBanned: { type: Boolean, default: false },
+    bannedReason: { type: String },
+    warningCount: { type: Number, default: 0 },
+    reportCount: { type: Number, default: 0 },
+    emailVerified: { type: Boolean, default: false },
+    e2ePublicKey: { type: String },
+    emailVerifyToken: { type: String },
+    emailVerifyExpires: { type: Date },
+    twoFactorEnabled: { type: Boolean, default: false },
+    twoFactorSecret: { type: String },
+    twoFactorBackup: [{ type: String }],
+    timezone: { type: String, default: 'Europe/Berlin' },
+    availability: {
+        enabled: { type: Boolean, default: false },
+        days: [{ type: Number }],
+        startTime: { type: String, default: '09:00' },
+        endTime: { type: String, default: '22:00' },
+        message: { type: String, default: '' },
+    },
+    customSounds: { type: mongoose_1.Schema.Types.Mixed, default: [] },
+    legacyUin: { type: String },
+    legacyVerified: { type: Boolean, default: false },
+    legacyMethod: { type: String },
+    legacyReserved: { type: Boolean, default: false },
+    // ── Admin-Rollen ──────────────────────────────────────────────────────────
+    adminRole: { type: String, enum: ['superadmin', 'moderator', 'support', 'analyst'], default: null },
+    adminInviteToken: { type: String },
+    adminInviteExpires: { type: Date },
+    adminInvitedBy: { type: String },
+    adminActiveAt: { type: Date },
+    activeIdentityId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Identity' },
+    identityCount: { type: Number, default: 0 },
+}, { timestamps: true, strict: false });
+const User = (0, mongoose_1.model)('User', UserSchema);
+exports.User = User;
+exports.default = User;

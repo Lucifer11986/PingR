@@ -1,0 +1,33 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.signAccessToken = signAccessToken;
+exports.signRefreshToken = signRefreshToken;
+exports.verifyAccessToken = verifyAccessToken;
+exports.verifyRefreshToken = verifyRefreshToken;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const JWT_SECRET = process.env.JWT_SECRET;
+const REFRESH_SECRET = process.env.REFRESH_SECRET;
+if (!JWT_SECRET || !REFRESH_SECRET) {
+    throw new Error('JWT Secrets fehlen in .env');
+}
+function signAccessToken(payload) {
+    return jsonwebtoken_1.default.sign(payload, JWT_SECRET, {
+        expiresIn: '15m',
+        issuer: 'pingr-api'
+    });
+}
+function signRefreshToken(payload) {
+    return jsonwebtoken_1.default.sign(payload, REFRESH_SECRET, {
+        expiresIn: '7d',
+        issuer: 'pingr-api'
+    });
+}
+function verifyAccessToken(token) {
+    return jsonwebtoken_1.default.verify(token, JWT_SECRET);
+}
+function verifyRefreshToken(token) {
+    return jsonwebtoken_1.default.verify(token, REFRESH_SECRET);
+}
