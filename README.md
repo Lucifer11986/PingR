@@ -96,6 +96,17 @@
 | ✉️ Wegwerf-E-Mail-Sperre | ✅ |
 | ✅ E-Mail-Verifizierung | ✅ |
 
+### 🤖 Developer-Plattform
+| Feature | Status |
+|---------|--------|
+| Bot-Verwaltung und Berechtigungen | ✅ |
+| Verschlüsselte Webhook-Secrets | ✅ |
+| Webhook-Zustellverlauf (30 Tage) | ✅ |
+| HTTP-Status, Laufzeit und Fehlerdetails | ✅ |
+| Webhook-Zustellungen erneut senden | ✅ |
+| Kurzlebige Developer-Sitzungen mit Refresh-Rotation | ✅ |
+| GitHub/Google OAuth mit PKCE | ✅ |
+
 ---
 
 ## 🏗️ Tech Stack
@@ -116,6 +127,13 @@
 ---
 
 ## 🚀 Deployment
+
+Für den kontrollierten Beta-Start siehe zusätzlich:
+
+- [`docs/LIVE-TEST-CHECKLIST.md`](docs/LIVE-TEST-CHECKLIST.md)
+- [`docs/GITHUB-WORKFLOW.md`](docs/GITHUB-WORKFLOW.md)
+- `./scripts/preflight.sh` vor dem Deployment
+- `./scripts/live-smoke-test.sh https://lumestack.de` nach dem Deployment
 
 ### Voraussetzungen
 - Docker & Docker Compose v2

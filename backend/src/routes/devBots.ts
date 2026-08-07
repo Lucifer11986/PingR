@@ -8,6 +8,7 @@ import BotWebhook from '../models/BotWebhook';
 import ScheduledMessage from '../models/ScheduledMessage';
 import Giveaway from '../models/Giveaway';
 import BotAnalytics from '../models/BotAnalytics';
+import WebhookDelivery from '../models/WebhookDelivery';
 import { validatePublicWebhookUrl } from '../utils/safeWebhookUrl';
 
 const router = Router();
@@ -167,6 +168,7 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
     await Promise.all([
       BotInstallation.deleteMany({ botId: bot.botId }),
       BotWebhook.deleteMany({ botId: bot.botId }),
+      WebhookDelivery.deleteMany({ botId: bot.botId }),
       ScheduledMessage.deleteMany({ botId: bot.botId }),
       Giveaway.deleteMany({ botId: bot.botId }),
       BotAnalytics.deleteMany({ botId: bot.botId }),

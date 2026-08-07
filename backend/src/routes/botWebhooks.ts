@@ -6,6 +6,9 @@ import { authMiddleware } from '../middleware/devAuth'
 import { validatePublicWebhookUrl } from '../utils/safeWebhookUrl'
 import { encryptWebhookSecret } from '../utils/webhookSecret'
 import { sendWebhook } from '../utils/webhookTrigger'
+import WebhookDelivery from '../models/WebhookDelivery'
+import { decryptField } from '../utils/fieldEncryption'
+import mongoose from 'mongoose'
 
 const router = express.Router()
 const allowedEvents = new Set(Object.values(WebhookEvent))
@@ -73,10 +76,61 @@ router.get('/bot/:botId', authMiddleware, async (req: Request, res: Response) =>
 })
 
 async function ownedWebhook(id: string, userId: string) {
+  if (!mongoose.isValidObjectId(id)) return null
   const webhook = await BotWebhook.findById(id)
   if (!webhook || !await ownedBot(webhook.botId, userId)) return null
   return webhook
 }
+
+function publicDelivery(delivery: any) {
+  const attempts = Array.isArray(delivery.attempts) ? delivery.attempts : []
+  const lastAttempt = attempts[attempts.length - 1]
+  return {
+    _id: delivery._id,
+    event: delivery.event,
+    url: delivery.url,
+    status: delivery.status,
+    attemptCount: attempts.length,
+    attempts,
+    lastHttpStatus: lastAttempt?.httpStatus,
+    lastError: lastAttempt?.error,
+    durationMs: lastAttempt?.durationMs,
+    replayOf: delivery.replayOf,
+    completedAt: delivery.completedAt,
+    createdAt: delivery.createdAt,
+  }
+}
+
+router.get('/:id/deliveries', authMiddleware, async (req: Request, res: Response) => {
+  const webhook = await ownedWebhook(req.params.id, (req as any).userId)
+  if (!webhook) return res.status(404).json({ error: 'Webhook nicht gefunden' })
+  const limit = Math.min(Math.max(Number(req.query.limit) || 25, 1), 100)
+  const status = String(req.query.status || '')
+  const query: any = { webhookId: webhook._id }
+  if (['pending', 'success', 'failed'].includes(status)) query.status = status
+  const [deliveries, total] = await Promise.all([
+    WebhookDelivery.find(query).sort({ createdAt: -1 }).limit(limit),
+    WebhookDelivery.countDocuments(query),
+  ])
+  res.json({ success: true, total, retentionDays: 30, deliveries: deliveries.map(publicDelivery) })
+})
+
+router.post('/:id/deliveries/:deliveryId/replay', authMiddleware, async (req: Request, res: Response) => {
+  const webhook = await ownedWebhook(req.params.id, (req as any).userId)
+  if (!webhook) return res.status(404).json({ error: 'Webhook nicht gefunden' })
+  if (!webhook.active) return res.status(409).json({ error: 'Webhook ist pausiert' })
+  if (!mongoose.isValidObjectId(req.params.deliveryId)) return res.status(404).json({ error: 'Zustellung nicht gefunden' })
+  const delivery = await WebhookDelivery.findOne({ _id: req.params.deliveryId, webhookId: webhook._id }).select('+payloadEncrypted')
+  if (!delivery) return res.status(404).json({ error: 'Zustellung nicht gefunden oder bereits abgelaufen' })
+  try {
+    const payload = JSON.parse(decryptField(delivery.payloadEncrypted))
+    if (!allowedEvents.has(payload.event) || payload.botId !== webhook.botId) throw new Error('Gespeicherte Zustellung ist ungültig')
+    const result = await sendWebhook(webhook, payload, 1, { replayOf: delivery._id.toString() })
+    return res.status(result.success ? 200 : 502).json(result)
+  } catch (error: any) {
+    return res.status(400).json({ error: error.message || 'Zustellung konnte nicht wiederholt werden' })
+  }
+})
 
 router.patch('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
@@ -93,7 +147,7 @@ router.patch('/:id', authMiddleware, async (req: Request, res: Response) => {
 router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   const webhook = await ownedWebhook(req.params.id, (req as any).userId)
   if (!webhook) return res.status(404).json({ error: 'Webhook nicht gefunden' })
-  await webhook.deleteOne()
+  await Promise.all([webhook.deleteOne(), WebhookDelivery.deleteMany({ webhookId: webhook._id })])
   res.json({ success: true })
 })
 

@@ -13,6 +13,17 @@ interface Webhook {
 
 interface BotOption { botId: string; name: string; isMarketplace?: boolean }
 
+interface DeliveryAttempt {
+  attempt: number; startedAt: string; completedAt: string; durationMs: number
+  httpStatus?: number; error?: string
+}
+
+interface WebhookDelivery {
+  _id: string; event: string; url: string; status: 'pending'|'success'|'failed'
+  attemptCount: number; attempts: DeliveryAttempt[]; lastHttpStatus?: number
+  lastError?: string; durationMs?: number; replayOf?: string; createdAt: string
+}
+
 const EVENTS = [
   { id: 'message.create', label: 'message.create', desc: 'Eine Nachricht wurde erstellt' },
   { id: 'message.delete', label: 'message.delete', desc: 'Eine Nachricht wurde gelöscht' },
@@ -39,6 +50,10 @@ const DevWebhooks: React.FC = () => {
   const [error, setError]               = useState('')
   const [testingId, setTestingId]       = useState<string | null>(null)
   const [testResult, setTestResult]     = useState<Record<string, string>>({})
+  const [expandedId, setExpandedId]     = useState<string | null>(null)
+  const [deliveries, setDeliveries]     = useState<Record<string, WebhookDelivery[]>>({})
+  const [historyLoading, setHistoryLoading] = useState<string | null>(null)
+  const [replayingId, setReplayingId]   = useState<string | null>(null)
 
   useEffect(() => {
     devFetch('/api/dev/bots', { headers: { Authorization: `Bearer ${token()}` } })
@@ -106,11 +121,37 @@ const DevWebhooks: React.FC = () => {
         method: 'POST', headers: { Authorization: `Bearer ${token()}` }
       })
       const d = await r.json()
-      setTestResult(prev => ({ ...prev, [id]: d.success ? '✅ Erfolgreich! Server hat 200 geantwortet.' : `❌ Fehlgeschlagen: ${d.error}` }))
+      setTestResult(prev => ({ ...prev, [id]: d.success ? `✅ Erfolgreich! HTTP ${d.httpStatus || '2xx'} in ${d.durationMs || 0} ms.` : `❌ Fehlgeschlagen: ${d.error}` }))
+      if (expandedId === id) await loadDeliveries(id, false)
     } catch {
       setTestResult(prev => ({ ...prev, [id]: '❌ Verbindungsfehler' }))
     }
     setTestingId(null)
+  }
+
+  const loadDeliveries = async (webhookId: string, togglePanel = true) => {
+    if (togglePanel && expandedId === webhookId) { setExpandedId(null); return }
+    setExpandedId(webhookId); setHistoryLoading(webhookId)
+    try {
+      const r = await devFetch(`/api/bot-webhooks/${webhookId}/deliveries?limit=25`)
+      const d = await r.json()
+      if (!r.ok) throw new Error(d.error || 'Verlauf konnte nicht geladen werden')
+      setDeliveries(prev => ({ ...prev, [webhookId]: d.deliveries || [] }))
+    } catch (err: any) {
+      setTestResult(prev => ({ ...prev, [webhookId]: `❌ ${err.message || 'Verlauf konnte nicht geladen werden'}` }))
+    } finally { setHistoryLoading(null) }
+  }
+
+  const replay = async (webhookId: string, deliveryId: string) => {
+    if (!confirm('Diese Webhook-Zustellung wirklich erneut senden?')) return
+    setReplayingId(deliveryId)
+    try {
+      const r = await devFetch(`/api/bot-webhooks/${webhookId}/deliveries/${deliveryId}/replay`, { method: 'POST' })
+      const d = await r.json()
+      setTestResult(prev => ({ ...prev, [webhookId]: d.success ? `✅ Erneut gesendet: HTTP ${d.httpStatus || '2xx'} in ${d.durationMs || 0} ms.` : `❌ Wiederholung fehlgeschlagen: ${d.error}` }))
+      await Promise.all([loadDeliveries(webhookId, false), load(selectedBot)])
+    } catch { setTestResult(prev => ({ ...prev, [webhookId]: '❌ Wiederholung konnte nicht gestartet werden' })) }
+    finally { setReplayingId(null) }
   }
 
   const toggleEvent = (id: string) =>
@@ -236,6 +277,9 @@ app.listen(3000, () => console.log('Server läuft!'));`}</pre>
                     <button onClick={() => test(wh._id)} disabled={testingId === wh._id} style={{ padding: '7px 14px', borderRadius: '6px', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', color: '#93c5fd', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}>
                       {testingId === wh._id ? '⏳...' : '🧪 Testen'}
                     </button>
+                    <button onClick={() => loadDeliveries(wh._id)} style={{ padding: '7px 14px', borderRadius: '6px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', color: '#c4b5fd', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}>
+                      {expandedId === wh._id ? 'Verlauf schließen' : '📋 Verlauf'}
+                    </button>
                     <button onClick={() => toggle(wh._id, wh.active)} style={{ padding: '7px 14px', borderRadius: '6px', background: wh.active ? 'rgba(234,179,8,0.1)' : 'rgba(34,197,94,0.1)', border: `1px solid ${wh.active ? 'rgba(234,179,8,0.25)' : 'rgba(34,197,94,0.25)'}`, color: wh.active ? '#fde047' : '#22c55e', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}>
                       {wh.active ? '⏸️ Pausieren' : '▶️ Aktivieren'}
                     </button>
@@ -249,6 +293,19 @@ app.listen(3000, () => console.log('Server läuft!'));`}</pre>
                   {wh.stats?.lastSuccess && ` · Zuletzt ausgelöst: ${new Date(wh.stats.lastSuccess).toLocaleString('de-DE')}`}
                   {(wh.stats?.failedCalls || 0) > 0 && <span style={{ color: '#f87171' }}> · {wh.stats?.failedCalls} Fehler</span>}
                 </div>
+                {expandedId === wh._id && <div style={{marginTop:16,paddingTop:16,borderTop:'1px solid rgba(255,255,255,.07)'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',gap:12,marginBottom:10}}>
+                    <strong style={{fontSize:13}}>Letzte Zustellungen</strong><span style={{fontSize:11,color:'#6b7280'}}>30 Tage gespeichert · Payload verschlüsselt</span>
+                  </div>
+                  {historyLoading === wh._id ? <div style={{fontSize:12,color:'#8b8aa8'}}>Verlauf wird geladen…</div> : (deliveries[wh._id] || []).length === 0 ? <div style={{fontSize:12,color:'#8b8aa8'}}>Noch keine Zustellungen vorhanden.</div> :
+                    <div style={{display:'grid',gap:8}}>{(deliveries[wh._id] || []).map(delivery => <div key={delivery._id} style={{display:'grid',gridTemplateColumns:'minmax(120px,1fr) auto auto auto',alignItems:'center',gap:12,padding:'10px 12px',borderRadius:8,background:'rgba(255,255,255,.025)',fontSize:12}}>
+                      <div><code style={{color:'#93c5fd'}}>{delivery.event}</code><div style={{color:'#6b7280',marginTop:3}}>{new Date(delivery.createdAt).toLocaleString('de-DE')}{delivery.replayOf?' · Wiederholung':''}</div></div>
+                      <span style={{color:delivery.status==='success'?'#86efac':delivery.status==='failed'?'#fca5a5':'#fde68a'}}>{delivery.status==='success'?'✓ Erfolgreich':delivery.status==='failed'?'✕ Fehlgeschlagen':'⏳ Ausstehend'}</span>
+                      <span style={{color:'#8b8aa8'}}>{delivery.lastHttpStatus?`HTTP ${delivery.lastHttpStatus}`:'–'} · {delivery.durationMs ?? 0} ms · {delivery.attemptCount} Versuch{delivery.attemptCount===1?'':'e'}</span>
+                      <button onClick={() => replay(wh._id, delivery._id)} disabled={!wh.active || replayingId===delivery._id} title={!wh.active?'Webhook zuerst aktivieren':''} style={{padding:'6px 10px',borderRadius:6,border:'1px solid rgba(232,184,109,.25)',background:'rgba(232,184,109,.08)',color:'#e8b86d',cursor:wh.active?'pointer':'not-allowed'}}>{replayingId===delivery._id?'…':'↻ Erneut'}</button>
+                      {delivery.lastError && <div style={{gridColumn:'1 / -1',color:'#fca5a5',fontFamily:'monospace',wordBreak:'break-word'}}>{delivery.lastError}</div>}
+                    </div>)}</div>}
+                </div>}
               </div>
             ))}
           </div>
