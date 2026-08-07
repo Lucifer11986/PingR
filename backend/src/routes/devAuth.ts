@@ -12,6 +12,7 @@ import ScheduledMessage from '../models/ScheduledMessage';
 import Giveaway from '../models/Giveaway';
 import BotAnalytics from '../models/BotAnalytics';
 import DevSession from '../models/DevSession';
+import WebhookDelivery from '../models/WebhookDelivery';
 import { sendDeveloperPasswordResetEmail, sendDeveloperVerificationEmail } from '../utils/mailer';
 import {
   hashSecret, normalizeDevEmail, randomToken, validDevEmail, validDevPassword, validDevUsername,
@@ -387,6 +388,7 @@ router.delete('/delete', authMiddleware, async (req: Request, res: Response) => 
     await Promise.all([
       BotInstallation.deleteMany({ botId: { $in: botIds } }),
       BotWebhook.deleteMany({ botId: { $in: botIds } }),
+      WebhookDelivery.deleteMany({ botId: { $in: botIds } }),
       ScheduledMessage.deleteMany({ botId: { $in: botIds } }),
       Giveaway.deleteMany({ botId: { $in: botIds } }),
       BotAnalytics.deleteMany({ botId: { $in: botIds } }),

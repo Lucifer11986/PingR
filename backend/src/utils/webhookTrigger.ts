@@ -3,6 +3,8 @@ import BotWebhook, { WebhookEvent } from '../models/BotWebhook'
 import BotAnalytics from '../models/BotAnalytics'
 import { validatePublicWebhookUrl } from './safeWebhookUrl'
 import { decryptWebhookSecret } from './webhookSecret'
+import WebhookDelivery from '../models/WebhookDelivery'
+import { encryptField } from './fieldEncryption'
 
 export interface WebhookPayload {
   event: WebhookEvent
@@ -29,8 +31,30 @@ function calculateSignature(payload: string, secret: string): string {
 export async function sendWebhook(
   webhook: any,
   payload: WebhookPayload,
-  attempt: number = 1
-): Promise<{ success: boolean; error?: string }> {
+  attempt: number = 1,
+  options: { deliveryId?: string; replayOf?: string } = {}
+): Promise<{ success: boolean; error?: string; deliveryId?: string; httpStatus?: number; durationMs?: number }> {
+  let deliveryId = options.deliveryId
+  if (!deliveryId) {
+    try {
+      const payloadString = JSON.stringify(payload)
+      if (Buffer.byteLength(payloadString, 'utf8') > 256 * 1024) throw new Error('Webhook-Payload überschreitet 256 KB')
+      const delivery = await WebhookDelivery.create({
+        webhookId: webhook._id,
+        botId: webhook.botId,
+        event: payload.event,
+        url: webhook.url,
+        payloadEncrypted: encryptField(payloadString),
+        replayOf: options.replayOf || undefined,
+      })
+      deliveryId = delivery._id.toString()
+    } catch (error) {
+      console.error('[WEBHOOK] Zustellprotokoll konnte nicht angelegt werden:', error)
+    }
+  }
+  const startedAt = new Date()
+  const startedMs = Date.now()
+  let httpStatus: number | undefined
   try {
     const payloadString = JSON.stringify(payload)
     await validatePublicWebhookUrl(webhook.url)
@@ -51,6 +75,7 @@ export async function sendWebhook(
       signal: AbortSignal.timeout(10000),
       redirect: 'error'
     })
+    httpStatus = response.status
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -62,9 +87,16 @@ export async function sendWebhook(
     webhook.stats.lastSuccess = new Date()
     await webhook.save()
 
+    const completedAt = new Date()
+    const durationMs = Date.now() - startedMs
+    if (deliveryId) await WebhookDelivery.findByIdAndUpdate(deliveryId, {
+      $push: { attempts: { attempt, startedAt, completedAt, durationMs, httpStatus } },
+      $set: { status: 'success', completedAt },
+    })
+
     console.log(`✅ [WEBHOOK] Success: ${payload.event} delivered`)
 
-    return { success: true }
+    return { success: true, deliveryId, httpStatus, durationMs }
 
   } catch (error: any) {
     console.error(`❌ [WEBHOOK] Failed (Attempt ${attempt}):`, error.message)
@@ -76,6 +108,14 @@ export async function sendWebhook(
     webhook.stats.lastError = error.message
     await webhook.save()
 
+    const completedAt = new Date()
+    const durationMs = Date.now() - startedMs
+    const errorMessage = String(error?.message || 'Unbekannter Fehler').slice(0, 1000)
+    if (deliveryId) await WebhookDelivery.findByIdAndUpdate(deliveryId, {
+      $push: { attempts: { attempt, startedAt, completedAt, durationMs, httpStatus, error: errorMessage } },
+      ...(attempt >= webhook.retryConfig.maxRetries ? { $set: { status: 'failed', completedAt } } : {}),
+    })
+
     // Retry logic
     if (attempt < webhook.retryConfig.maxRetries) {
       const delay = webhook.retryConfig.backoff === 'exponential' 
@@ -85,10 +125,10 @@ export async function sendWebhook(
       console.log(`🔄 [WEBHOOK] Retrying in ${delay}ms...`)
       
       await new Promise(resolve => setTimeout(resolve, delay))
-      return sendWebhook(webhook, payload, attempt + 1)
+      return sendWebhook(webhook, payload, attempt + 1, { ...options, deliveryId })
     }
 
-    return { success: false, error: error.message }
+    return { success: false, error: errorMessage, deliveryId, httpStatus, durationMs }
   }
 }
 
